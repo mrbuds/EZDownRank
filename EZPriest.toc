@@ -1,0 +1,9 @@
+## Interface: 11302
+## Title: EZPriest
+## Author: Buds
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## OptionalDeps: LibGetFrame-1.0 VuhDo
+
+embeds.xml
+EZPriest.lua
