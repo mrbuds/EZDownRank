@@ -34,6 +34,15 @@ local buttons = {}
 local shift = false
 local healingPower, mana
 
+local maxCost = 0
+for _, spell in pairs(spells) do
+    if spell.cost > maxCost then maxCost = spell.cost end
+end
+for _, spell in pairs(shiftSpells) do
+    if spell.cost > maxCost then maxCost = spell.cost end
+end
+
+
 local f = CreateFrame("Frame")
 
 local IterateGroupMembers = function(reversed, forceParty)
@@ -230,7 +239,9 @@ end
 function f:UNIT_POWER_UPDATE(event, unit)
     print_debug(event, unit)
     updateStats()
-    updateAllUnitColor()
+    if mana < maxCost then
+        updateAllUnitColor()
+    end
 end
 
 f:RegisterEvent("PLAYER_REGEN_DISABLED")
