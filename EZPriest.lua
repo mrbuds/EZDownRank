@@ -91,6 +91,7 @@ local buttonHide = function(button)
 end
 
 local space = 5
+local alpha = 0.4
 
 local updateUnitColor = function(unit)
     print_debug("updateUnitColor", unit)
@@ -112,16 +113,16 @@ local updateUnitColor = function(unit)
                 end
                 if not bestFound then
                     if enoughMana then
-                        button.texture:SetColorTexture(0, 1, 0, 0.6) -- green
+                        button.texture:SetColorTexture(0, 1, 0, alpha) -- green
                     end
                     bestFound = true
                 else
                     if enoughMana then
-                        button.texture:SetColorTexture(1, 1, 0, 0.6) -- yellow
+                        button.texture:SetColorTexture(1, 1, 0, alpha) -- yellow
                     end
                 end
                 if not enoughMana then
-                    button.texture:SetColorTexture(1, 0.5, 0, 0.6) -- orange
+                    button.texture:SetColorTexture(1, 0.5, 0, alpha) -- orange
                 end
             end
         end
