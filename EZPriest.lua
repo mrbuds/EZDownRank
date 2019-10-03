@@ -90,8 +90,7 @@ local buttonHide = function(button)
     button:SetAttribute("shift-spell1", nil)
 end
 
-local space = 5
-local alpha = 0.4
+local alpha = 0.3
 
 local updateUnitColor = function(unit)
     print_debug("updateUnitColor", unit)
