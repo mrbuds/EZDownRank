@@ -135,6 +135,8 @@ local updateAllUnitColor = function()
     end
 end
 
+local size = 15
+
 local InitSquares = function()
     print_debug("InitSquares")
     for _, button in pairs(buttons) do
@@ -146,8 +148,10 @@ local InitSquares = function()
         local frame = GetUnitFrame(unit)
         if frame then
             local scale = frame:GetEffectiveScale()
-            local size = (frame:GetWidth() * scale - (space * scale * 2)) / 4
-            local x, y = space * scale, -5 - space * scale
+            local ssize = size * scale
+            local x_space = (((frame:GetWidth() * scale) - (4 * ssize))) / 2
+            local y_space = (((frame:GetHeight() * scale) - (2 * ssize))) / 2
+            local x, y = x_space, - y_space
             for i = 1, 8 do
                 local buttonName = unit.."-"..i
                 local button = buttons[buttonName]
@@ -163,14 +167,14 @@ local InitSquares = function()
                 button:SetAttribute("spell1", spells[i] and spells[i].spellId)
                 button:SetAttribute("shift-type1", "spell")
                 button:SetAttribute("shift-spell1", shiftSpells[i] and shiftSpells[i].spellId)
-                button:SetSize(size, size)
-                button.texture:SetColorTexture(1, 0, 0, 1)
+                button:SetSize(ssize, ssize)
+                button.texture:SetColorTexture(1, 0, 0, 0)
                 button:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
                 if i == 4 then
-                    x = space * scale
-                    y = y - size
+                    x = x_space
+                    y = y - ssize
                 else
-                    x = x + size
+                    x = x + ssize
                 end
                 button:Show()
             end
