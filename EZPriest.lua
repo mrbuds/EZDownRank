@@ -10,25 +10,47 @@ local print_debug = function(...)
 end
 
 local spells = {
-    { name = "H1", min = 337, max = 389, cost = 132, spellId = 2054, baseCastTime = 3 },
-    { name = "H2", min = 489, max = 558, cost = 174, spellId = 2055, baseCastTime = 3 },
-    { name = "H3", min = 644, max = 729, cost = 217, spellId = 6063, baseCastTime = 3 },
-    { name = "H4", min = 807, max = 910, cost = 259, spellId = 6064, baseCastTime = 3 },
-    { name = "GH1", min = 1016, max = 1143, cost = 314, spellId = 2060, baseCastTime = 3 },
-    { name = "GH2", min = 1295, max = 1450, cost = 387, spellId = 10963, baseCastTime = 3 },
-    { name = "GH3", min = 1617, max = 1807, cost = 463, spellId = 10964, baseCastTime = 3 },
-    { name = "GH4", min = 1994, max = 2224, cost = 557, spellId = 10965, baseCastTime = 3 },
+    { name = "H1", cost = 132, spellId = 2054, baseCastTime = 3 },
+    { name = "H2", cost = 174, spellId = 2055, baseCastTime = 3 },
+    { name = "H3", cost = 217, spellId = 6063, baseCastTime = 3 },
+    { name = "H4", cost = 259, spellId = 6064, baseCastTime = 3 },
+    { name = "GH1", cost = 314, spellId = 2060, baseCastTime = 3 },
+    { name = "GH2", cost = 387, spellId = 10963, baseCastTime = 3 },
+    { name = "GH3", cost = 463, spellId = 10964, baseCastTime = 3 },
+    { name = "GH4", cost = 557, spellId = 10965, baseCastTime = 3 },
 }
 
 local shiftSpells = {
-    { name = "F1", min = 222, max = 272, cost = 125, spellId = 2061, baseCastTime = 1.5 },
-    { name = "F2", min = 295, max = 358, cost = 155, spellId = 9472, baseCastTime = 1.5 },
-    { name = "F3", min = 373, max = 447, cost = 185, spellId = 9473, baseCastTime = 1.5 },
-    { name = "F4", min = 455, max = 542, cost = 215, spellId = 9474, baseCastTime = 1.5 },
-    { name = "F5", min = 587, max = 696, cost = 265, spellId = 10915, baseCastTime = 1.5 },
-    { name = "F6", min = 728, max = 861, cost = 315, spellId = 10916, baseCastTime = 1.5 },
-    { name = "F7", min = 911, max = 1073, cost = 380, spellId = 10917, baseCastTime = 1.5 },
+    { name = "F1", cost = 125, spellId = 2061, baseCastTime = 1.5 },
+    { name = "F2", cost = 155, spellId = 9472, baseCastTime = 1.5 },
+    { name = "F3", cost = 185, spellId = 9473, baseCastTime = 1.5 },
+    { name = "F4", cost = 215, spellId = 9474, baseCastTime = 1.5 },
+    { name = "F5", cost = 265, spellId = 10915, baseCastTime = 1.5 },
+    { name = "F6", cost = 315, spellId = 10916, baseCastTime = 1.5 },
+    { name = "F7", cost = 380, spellId = 10917, baseCastTime = 1.5 },
 }
+
+local hiddenTooltip
+local function GetHiddenTooltip()
+  if not hiddenTooltip then
+    hiddenTooltip = CreateFrame("GameTooltip", "EZPriestTooltip", nil, "GameTooltipTemplate")
+    hiddenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+    hiddenTooltip:AddFontStrings(
+      hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+      hiddenTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+    )
+  end
+  return hiddenTooltip
+end
+
+local function getMinMax(spellId)
+    local tooltip = GetHiddenTooltip()
+    tooltip:ClearLines()
+    tooltip:SetSpellByID(spellId)
+    local tooltipTextLine = select(9, tooltip:GetRegions())
+    local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
+    return tooltipText:match("(%d+) .+ (%d+)")
+end
 
 local buttons = {}
 local shift = false
@@ -37,9 +59,11 @@ local healingPower, mana
 local maxCost = 0
 for _, spell in pairs(spells) do
     if spell.cost > maxCost then maxCost = spell.cost end
+    spell.min, spell.max = getMinMax(spell.spellId)
 end
 for _, spell in pairs(shiftSpells) do
     if spell.cost > maxCost then maxCost = spell.cost end
+    spell.min, spell.max = getMinMax(spell.spellId)
 end
 
 
@@ -148,6 +172,7 @@ local InitSquares = function()
         local frame = GetUnitFrame(unit)
         if frame then
             local scale = frame:GetEffectiveScale()
+            -- local size = (frame:GetWidth() * scale - (space * scale * 2)) / 4
             local ssize = size * scale
             local x_space = (((frame:GetWidth() * scale) - (4 * ssize))) / 2
             local y_space = (((frame:GetHeight() * scale) - (2 * ssize))) / 2
@@ -232,7 +257,7 @@ function f:MODIFIER_STATE_CHANGED(event, key, state)
     end
 end
 
-function f:UNIT_HEALTH(event, unit)
+function f:UNIT_HEALTH_FREQUENT(event, unit)
     print_debug(event, unit)
     if groupUnit[unit] then
         updateStats()
@@ -250,7 +275,7 @@ end
 
 f:RegisterEvent("PLAYER_REGEN_DISABLED")
 f:RegisterEvent("GROUP_ROSTER_UPDATE")
-f:RegisterEvent("UNIT_HEALTH")
+f:RegisterEvent("UNIT_HEALTH_FREQUENT")
 f:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 f:RegisterEvent("ADDON_LOADED")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
