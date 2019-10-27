@@ -59,11 +59,9 @@ local healingPower, mana
 local maxCost = 0
 for _, spell in pairs(spells) do
     if spell.cost > maxCost then maxCost = spell.cost end
-    spell.min, spell.max = getMinMax(spell.spellId)
 end
 for _, spell in pairs(shiftSpells) do
     if spell.cost > maxCost then maxCost = spell.cost end
-    spell.min, spell.max = getMinMax(spell.spellId)
 end
 
 
@@ -125,27 +123,32 @@ local updateUnitColor = function(unit)
         local button = buttons[unit.."-"..i]
         local spell = activeSpells[i]
         if button and spell then
-            local bonus = healingPower * (spell.baseCastTime / 3.5)
-            local spellMaxHealing = spell.max + bonus -- calculate max heal
-            if spellMaxHealing > deficit then
-                button.texture:SetColorTexture(1, 0, 0, 0) -- invisible
-            else
-                local enoughMana
-                if mana >= spell.cost then
-                    enoughMana = true
-                end
-                if not bestFound then
-                    if enoughMana then
-                        button.texture:SetColorTexture(0, 1, 0, alpha) -- green
-                    end
-                    bestFound = true
+            if not spell.max then
+                spell.min, spell.max = getMinMax(spell.spellId)
+            end
+            if spell.max then
+                local bonus = healingPower * (spell.baseCastTime / 3.5)
+                local spellMaxHealing = spell.max + bonus -- calculate max heal
+                if spellMaxHealing > deficit then
+                    button.texture:SetColorTexture(1, 0, 0, 0) -- invisible
                 else
-                    if enoughMana then
-                        button.texture:SetColorTexture(1, 1, 0, alpha) -- yellow
+                    local enoughMana
+                    if mana >= spell.cost then
+                        enoughMana = true
                     end
-                end
-                if not enoughMana then
-                    button.texture:SetColorTexture(1, 0.5, 0, alpha) -- orange
+                    if not bestFound then
+                        if enoughMana then
+                            button.texture:SetColorTexture(0, 1, 0, alpha) -- green
+                        end
+                        bestFound = true
+                    else
+                        if enoughMana then
+                            button.texture:SetColorTexture(1, 1, 0, alpha) -- yellow
+                        end
+                    end
+                    if not enoughMana then
+                        button.texture:SetColorTexture(1, 0.5, 0, alpha) -- orange
+                    end
                 end
             end
         end
