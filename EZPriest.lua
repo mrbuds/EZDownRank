@@ -1,5 +1,6 @@
 local GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown, GetTime = GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown, GetTime
-local GetUnitFrame = LibStub("LibGetFrame-1.0").GetUnitFrame
+local LGF = LibStub("LibGetFrame-1.0")
+local GetUnitFrame = LGF.GetUnitFrame
 if select(2, UnitClass("player")) ~= "PRIEST" then return end
 local debug = false
 
@@ -229,6 +230,7 @@ f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
 end)
 
+--[[
 function f:GROUP_ROSTER_UPDATE(event)
     print_debug(event)
     DelayedUpdate()
@@ -243,13 +245,17 @@ function f:PLAYER_ENTERING_WORLD(event)
     print_debug(event)
     DelayedUpdate()
 end
-
+--]]
 function f:ADDON_LOADED(event, addonName)
     print_debug(event, addonName)
     if addonName == "EZPriest" then
         DelayedUpdate()
     end
 end
+
+LGF.RegisterCallback("EZPriest", "GETFRAME_REFRESH", function()
+    Update()
+end)
 
 function f:MODIFIER_STATE_CHANGED(event, key, state)
     if key == "LSHIFT" or key == "RSHIFT" then
@@ -276,10 +282,10 @@ function f:UNIT_POWER_UPDATE(event, unit)
     end
 end
 
-f:RegisterEvent("PLAYER_REGEN_DISABLED")
-f:RegisterEvent("GROUP_ROSTER_UPDATE")
+--f:RegisterEvent("PLAYER_REGEN_DISABLED")
+--f:RegisterEvent("GROUP_ROSTER_UPDATE")
 f:RegisterEvent("UNIT_HEALTH_FREQUENT")
 f:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 f:RegisterEvent("ADDON_LOADED")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
+--f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("MODIFIER_STATE_CHANGED")
