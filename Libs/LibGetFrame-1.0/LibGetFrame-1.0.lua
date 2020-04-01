@@ -1,8 +1,11 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 8
+local MINOR_VERSION = 15
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
+
+lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
+local callbacks = lib.callbacks
 
 local GetPlayerInfoByGUID, UnitExists, IsAddOnLoaded, C_Timer, UnitIsUnit, SecureButton_GetUnit = GetPlayerInfoByGUID, UnitExists, IsAddOnLoaded, C_Timer, UnitIsUnit, SecureButton_GetUnit
 local tinsert, CopyTable, wipe = tinsert, CopyTable, wipe
@@ -47,6 +50,8 @@ local defaultPlayerFrames = {
     "ElvUF_Player",
     "oUF_TukuiPlayer",
     "PlayerFrame",
+    "oUF_Player",
+    "oUF_PlayerPlate",
 }
 local defaultTargetFrames = {
     "SUFUnittarget",
@@ -54,6 +59,7 @@ local defaultTargetFrames = {
     "ElvUF_Target",
     "TargetFrame",
     "oUF_TukuiTarget",
+    "oUF_Target",
 }
 local defaultTargettargetFrames = {
     "SUFUnittargetarget",
@@ -61,9 +67,12 @@ local defaultTargettargetFrames = {
     "ElvUF_TargetTarget",
     "TargetTargetFrame",
     "oUF_TukuiTargetTarget",
+    "oUF_ToT",
 }
 
 local GetFramesCache = {}
+local FrameToUnit = {}
+local UpdatedFrames = {}
 
 local function ScanFrames(depth, frame, ...)
     if not frame then return end
@@ -80,20 +89,37 @@ local function ScanFrames(depth, frame, ...)
             local name = frame:GetName()
             if unit and frame:IsVisible() and name then
                 GetFramesCache[frame] = name
+                if unit ~= FrameToUnit[frame] then
+                    FrameToUnit[frame] = unit
+                    UpdatedFrames[frame] = unit
+                end
             end
         end
     end
     ScanFrames(depth, ...)
 end
 
+local wait = false
 local function ScanForUnitFrames(noDelay)
     if noDelay then
+        wipe(UpdatedFrames)
         wipe(GetFramesCache)
         ScanFrames(0, UIParent)
-    else
+        callbacks:Fire("GETFRAME_REFRESH")
+        for frame, unit in pairs(UpdatedFrames) do
+            callbacks:Fire("FRAME_UNIT_UPDATE", frame, unit)
+        end
+    elseif not wait then
+        wait = true
         C_Timer.After(1, function()
+            wipe(UpdatedFrames)
             wipe(GetFramesCache)
             ScanFrames(0, UIParent)
+            wait = false
+            callbacks:Fire("GETFRAME_REFRESH")
+            for frame, unit in pairs(UpdatedFrames) do
+                callbacks:Fire("FRAME_UNIT_UPDATE", frame, unit)
+            end
         end)
     end
 end
@@ -149,25 +175,25 @@ local defaultOptions = {
     targetFrames = defaultTargetFrames,
     targettargetFrames = defaultTargettargetFrames,
     ignoreFrames = {
-        "PitBull4_Frames_Target's target's target"
+        "PitBull4_Frames_Target's target's target",
+        "ElvUF_PartyGroup%dUnitButton%dTarget"
     },
     returnAll = false,
 }
 
 local GetFramesCacheListener
-lib.Init = function(noDelay)
+local function Init(noDelay)
     GetFramesCacheListener = CreateFrame("Frame")
     GetFramesCacheListener:RegisterEvent("PLAYER_REGEN_DISABLED")
     GetFramesCacheListener:RegisterEvent("PLAYER_REGEN_ENABLED")
     GetFramesCacheListener:RegisterEvent("PLAYER_ENTERING_WORLD")
     GetFramesCacheListener:RegisterEvent("GROUP_ROSTER_UPDATE")
-    GetFramesCacheListener:SetScript("OnEvent", ScanForUnitFrames)
-
+    GetFramesCacheListener:SetScript("OnEvent", function() ScanForUnitFrames(false) end)
     ScanForUnitFrames(noDelay)
 end
 
 function lib.GetUnitFrame(target, opt)
-    if not GetFramesCacheListener then lib.Init(true) end
+    if type(GetFramesCacheListener) ~= "table" then Init(true) end
     opt = opt or {}
     setmetatable(opt, { __index = defaultOptions })
 
@@ -211,3 +237,37 @@ function lib.GetUnitFrame(target, opt)
     end
 end
 lib.GetFrame = lib.GetUnitFrame -- compatibility
+
+-- nameplates
+function lib.GetUnitNameplate(unit)
+    if not unit then return end
+    local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
+    if nameplate then
+        -- credit to Exality for https://wago.io/explosiveorbs
+        if nameplate.unitFrame and nameplate.unitFrame.HealthBar then
+          -- elvui
+          return nameplate.unitFrame.HealthBar
+        elseif nameplate.unitFramePlater then
+          -- plater
+          return nameplate.unitFramePlater.healthBar
+        elseif nameplate.kui then
+          -- kui
+          return nameplate.kui.HealthBar
+        elseif nameplate.extended then
+          -- tidyplates
+          --nameplate.extended.visual.healthbar:SetHeight(tidyplatesHeight)
+          return nameplate.extended.visual.healthbar
+        elseif nameplate.TPFrame then
+          -- tidyplates: threat plates
+          return nameplate.TPFrame.visual.healthbar
+        elseif nameplate.ouf then
+          -- bdNameplates
+          return nameplate.ouf.Health
+        elseif nameplate.UnitFrame then
+          -- default
+          return nameplate.UnitFrame.healthBar
+        else
+          return nameplate
+        end
+    end
+end
