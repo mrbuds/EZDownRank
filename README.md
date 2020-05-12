@@ -26,6 +26,8 @@ Shift is not pressed, i have only 261 mana left
 - Best healing spell for Laevan is "Greater Heal rank 3", max rank i can cast is "Heal rank 4"
 - My "Heal rank 1" will overheal Fraisette
 
+[Twitch video in action in BWL](https://www.twitch.tv/videos/617061387?t=0h11m12s)
+
 ## Q & A
 
 - Where are the settings ? There is no setting UI, you are free to edit whatever you want in the code for your own taste.
