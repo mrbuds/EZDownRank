@@ -230,22 +230,6 @@ f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
 end)
 
---[[
-function f:GROUP_ROSTER_UPDATE(event)
-    print_debug(event)
-    DelayedUpdate()
-end
-
-function f:PLAYER_REGEN_DISABLED(event)
-    print_debug(event)
-    DelayedUpdate()
-end
-
-function f:PLAYER_ENTERING_WORLD(event)
-    print_debug(event)
-    DelayedUpdate()
-end
---]]
 function f:ADDON_LOADED(event, addonName)
     print_debug(event, addonName)
     if addonName == "EZPriest" then
@@ -282,10 +266,7 @@ function f:UNIT_POWER_UPDATE(event, unit)
     end
 end
 
---f:RegisterEvent("PLAYER_REGEN_DISABLED")
---f:RegisterEvent("GROUP_ROSTER_UPDATE")
 f:RegisterEvent("UNIT_HEALTH_FREQUENT")
 f:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 f:RegisterEvent("ADDON_LOADED")
---f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("MODIFIER_STATE_CHANGED")
