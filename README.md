@@ -25,3 +25,10 @@ Shift is not pressed, i have only 261 mana left
 - Best healing spell for Nemesis is "Greater Heal rank 2", max rank i can cast is "Heal rank 4"
 - Best healing spell for Laevan is "Greater Heal rank 3", max rank i can cast is "Heal rank 4"
 - My "Heal rank 1" will overheal Fraisette
+
+## Q & A
+
+- Where are the settings ? There is no setting UI, you are free to edit whatever you want in the code for your own taste.
+- Where can i fill a bug report ? [Here](https://github.com/mrbuds/EZPriest/issues/new)
+- Can you make it work for [insert class name] ? No, but pull requests are welcome.
+- Can i give you my money ? How kind of you ! I accept donation thrue [paypal](https://paypal.me/BudsWA).
