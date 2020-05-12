@@ -1,5 +1,7 @@
 # EZPriest
 
+World of Warcraft Classic addon for healing priests.
+
 Add 8 clickable buttons on each raid frame, their color change depending on health deficit, your spell power, and your mana.
 
 ## Buttons
