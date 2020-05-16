@@ -10,7 +10,7 @@ local print_debug = function(...)
     end
 end
 
-local spells = {
+local greater = {
     { name = "H1", cost = 132, spellId = 2054, baseCastTime = 3 },
     { name = "H2", cost = 174, spellId = 2055, baseCastTime = 3 },
     { name = "H3", cost = 217, spellId = 6063, baseCastTime = 3 },
@@ -21,7 +21,7 @@ local spells = {
     { name = "GH4", cost = 557, spellId = 10965, baseCastTime = 3 },
 }
 
-local shiftSpells = {
+local flash = {
     { name = "F1", cost = 125, spellId = 2061, baseCastTime = 1.5 },
     { name = "F2", cost = 155, spellId = 9472, baseCastTime = 1.5 },
     { name = "F3", cost = 185, spellId = 9473, baseCastTime = 1.5 },
@@ -58,10 +58,10 @@ local shift = false
 local healingPower, mana
 
 local maxCost = 0
-for _, spell in pairs(spells) do
+for _, spell in pairs(greater) do
     if spell.cost > maxCost then maxCost = spell.cost end
 end
-for _, spell in pairs(shiftSpells) do
+for _, spell in pairs(flash) do
     if spell.cost > maxCost then maxCost = spell.cost end
 end
 
@@ -117,7 +117,7 @@ local alpha = 0.3
 
 local updateUnitColor = function(unit)
     print_debug("updateUnitColor", unit)
-    local activeSpells = shift and shiftSpells or spells
+    local activeSpells = shift and greater or flash
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
     local bestFound
     for i = 8, 1, -1 do
@@ -193,9 +193,9 @@ local InitSquares = function()
                 end
                 button:SetAttribute("unit", unit)
                 button:SetAttribute("type1", "spell")
-                button:SetAttribute("spell1", spells[i] and spells[i].spellId)
+                button:SetAttribute("spell1", flash[i] and flash[i].spellId)
                 button:SetAttribute("shift-type1", "spell")
-                button:SetAttribute("shift-spell1", shiftSpells[i] and shiftSpells[i].spellId)
+                button:SetAttribute("shift-spell1", greater[i] and greater[i].spellId)
                 button:SetSize(ssize, ssize)
                 button.texture:SetColorTexture(1, 0, 0, 0)
                 button:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
