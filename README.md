@@ -6,9 +6,9 @@ Add 8 clickable buttons on each raid frame, their color change depending on heal
 
 ## Buttons
 
-- Buttons 1-4 (1st line) cast "Heal" from rank 1 to 4
-- Buttons 5-8 (2nd line) cast "Greater Heal" from rank 1 to 4
-- Shift click on Buttons 1-7 cast "Flash Heal" from rank 1 to 7
+- Click on Buttons 1-7 cast "Flash Heal" from rank 1 to 7
+- Shift Buttons 1-4 (1st line) cast "Heal" from rank 1 to 4
+- Shift Buttons 5-8 (2nd line) cast "Greater Heal" from rank 1 to 4
 
 ## Colors
 
@@ -21,7 +21,7 @@ Add 8 clickable buttons on each raid frame, their color change depending on heal
 
 ![img](https://i.imgur.com/E9L8EeK.png)
 
-Shift is not pressed, i have only 261 mana left
+Shift is pressed, i have only 261 mana left
 
 - Best healing spell for Lonlon is "Heal rank 4"
 - Best healing spell for Nemesis is "Greater Heal rank 2", max rank i can cast is "Heal rank 4"
