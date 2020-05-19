@@ -1,7 +1,7 @@
 package-as: EZPriest
 
 externals:
-  EZPriest/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
+  Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
   
 ignore:
   - README.md
