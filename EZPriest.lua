@@ -95,12 +95,12 @@ local keyState = "normal"
 local healingPower, mana
 
 local maxCostTable = {}
-for _, state in ipairs({"normal", "shift", "ctrl", "alt"}) do
-    maxCostTable[state] = 0
-    if mySpells[state] then
-        for _, spell in pairs(mySpells[state]) do
-            if spell.cost > maxCostTable[state] then
-                maxCostTable[state] = spell.cost
+for _, key in ipairs({"normal", "shift", "ctrl", "alt"}) do
+    maxCostTable[key] = 0
+    if mySpells[key] then
+        for _, spell in pairs(mySpells[key]) do
+            if spell.cost > maxCostTable[key] then
+                maxCostTable[key] = spell.cost
             end
         end
     end
