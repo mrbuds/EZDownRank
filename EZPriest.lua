@@ -1,7 +1,8 @@
 local GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown, GetTime = GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown, GetTime
 local LGF = LibStub("LibGetFrame-1.0")
 local GetUnitFrame = LGF.GetUnitFrame
-if select(2, UnitClass("player")) ~= "PRIEST" then return end
+local myClass = select(2, UnitClass("player"))
+if myClass ~= "PRIEST" then return end
 local debug = false
 
 local print_debug = function(...)
@@ -10,26 +11,31 @@ local print_debug = function(...)
     end
 end
 
-local greater = {
-    { name = "H1", cost = 132, spellId = 2054, baseCastTime = 3 },
-    { name = "H2", cost = 174, spellId = 2055, baseCastTime = 3 },
-    { name = "H3", cost = 217, spellId = 6063, baseCastTime = 3 },
-    { name = "H4", cost = 259, spellId = 6064, baseCastTime = 3 },
-    { name = "GH1", cost = 314, spellId = 2060, baseCastTime = 3 },
-    { name = "GH2", cost = 387, spellId = 10963, baseCastTime = 3 },
-    { name = "GH3", cost = 463, spellId = 10964, baseCastTime = 3 },
-    { name = "GH4", cost = 557, spellId = 10965, baseCastTime = 3 },
+local spells = {
+    PRIEST = {
+        normal = {
+            { name = "F1", cost = 125, spellId = 2061, baseCastTime = 1.5 },
+            { name = "F2", cost = 155, spellId = 9472, baseCastTime = 1.5 },
+            { name = "F3", cost = 185, spellId = 9473, baseCastTime = 1.5 },
+            { name = "F4", cost = 215, spellId = 9474, baseCastTime = 1.5 },
+            { name = "F5", cost = 265, spellId = 10915, baseCastTime = 1.5 },
+            { name = "F6", cost = 315, spellId = 10916, baseCastTime = 1.5 },
+            { name = "F7", cost = 380, spellId = 10917, baseCastTime = 1.5 },
+        },
+        shift = {
+            { name = "H1", cost = 132, spellId = 2054, baseCastTime = 3 },
+            { name = "H2", cost = 174, spellId = 2055, baseCastTime = 3 },
+            { name = "H3", cost = 217, spellId = 6063, baseCastTime = 3 },
+            { name = "H4", cost = 259, spellId = 6064, baseCastTime = 3 },
+            { name = "GH1", cost = 314, spellId = 2060, baseCastTime = 3 },
+            { name = "GH2", cost = 387, spellId = 10963, baseCastTime = 3 },
+            { name = "GH3", cost = 463, spellId = 10964, baseCastTime = 3 },
+            { name = "GH4", cost = 557, spellId = 10965, baseCastTime = 3 },
+        }
+    }
 }
 
-local flash = {
-    { name = "F1", cost = 125, spellId = 2061, baseCastTime = 1.5 },
-    { name = "F2", cost = 155, spellId = 9472, baseCastTime = 1.5 },
-    { name = "F3", cost = 185, spellId = 9473, baseCastTime = 1.5 },
-    { name = "F4", cost = 215, spellId = 9474, baseCastTime = 1.5 },
-    { name = "F5", cost = 265, spellId = 10915, baseCastTime = 1.5 },
-    { name = "F6", cost = 315, spellId = 10916, baseCastTime = 1.5 },
-    { name = "F7", cost = 380, spellId = 10917, baseCastTime = 1.5 },
-}
+local mySpells = spells[myClass]
 
 local hiddenTooltip
 local function GetHiddenTooltip()
@@ -58,10 +64,10 @@ local shift = false
 local healingPower, mana
 
 local maxCost = 0
-for _, spell in pairs(greater) do
+for _, spell in pairs(mySpells.normal) do
     if spell.cost > maxCost then maxCost = spell.cost end
 end
-for _, spell in pairs(flash) do
+for _, spell in pairs(mySpells.shift) do
     if spell.cost > maxCost then maxCost = spell.cost end
 end
 
@@ -117,7 +123,7 @@ local alpha = 0.3
 
 local updateUnitColor = function(unit)
     print_debug("updateUnitColor", unit)
-    local activeSpells = shift and greater or flash
+    local activeSpells = shift and mySpells.shift or mySpells.normal
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
     local bestFound
     for i = 8, 1, -1 do
@@ -193,9 +199,9 @@ local InitSquares = function()
                 end
                 button:SetAttribute("unit", unit)
                 button:SetAttribute("type1", "spell")
-                button:SetAttribute("spell1", flash[i] and flash[i].spellId)
+                button:SetAttribute("spell1", mySpells.normal[i] and mySpells.normal[i].spellId)
                 button:SetAttribute("shift-type1", "spell")
-                button:SetAttribute("shift-spell1", greater[i] and greater[i].spellId)
+                button:SetAttribute("shift-spell1", mySpells.shift[i] and mySpells.shift[i].spellId)
                 button:SetSize(ssize, ssize)
                 button.texture:SetColorTexture(1, 0, 0, 0)
                 button:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
