@@ -29,7 +29,9 @@ local spells = {
             { name = "GH2", cost = 387, spellId = 10963, baseCastTime = 3 },
             { name = "GH3", cost = 463, spellId = 10964, baseCastTime = 3 },
             { name = "GH4", cost = 557, spellId = 10965, baseCastTime = 3 },
-        }
+        },
+        -- ctrl = {},
+        -- alt = {},
     }
 }
 
@@ -62,16 +64,22 @@ end
 
 local buttons = {}
 local shift = false
+local ctrl = false
+local alt = false
+local keyState = "normal"
 local healingPower, mana
 
-local maxCost = 0
-for _, spell in pairs(mySpells.normal) do
-    if spell.cost > maxCost then maxCost = spell.cost end
+local maxCostTable = {}
+for _, state in ipairs({"normal", "shift", "ctrl", "alt"}) do
+    maxCostTable[state] = 0
+    if mySpells[state] then
+        for _, spell in pairs(mySpells[state]) do
+            if spell.cost > maxCostTable[state] then
+                maxCostTable[state] = spell.cost
+            end
+        end
+    end
 end
-for _, spell in pairs(mySpells.shift) do
-    if spell.cost > maxCost then maxCost = spell.cost end
-end
-
 
 local f = CreateFrame("Frame")
 
@@ -118,13 +126,17 @@ local buttonHide = function(button)
     button:SetAttribute("spell1", nil)
     button:SetAttribute("shift-type1", nil)
     button:SetAttribute("shift-spell1", nil)
+    button:SetAttribute("ctrl-type1", nil)
+    button:SetAttribute("ctrl-spell1", nil)
+    button:SetAttribute("alt-type1", nil)
+    button:SetAttribute("alt-spell1", nil)
 end
 
 local alpha = 0.3
 
 local updateUnitColor = function(unit)
     print_debug("updateUnitColor", unit)
-    local activeSpells = shift and mySpells.shift or mySpells.normal
+    local activeSpells = mySpells[keyState] or mySpells.normal
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
     local bestFound
     for i = 8, 1, -1 do
@@ -205,8 +217,18 @@ local InitSquares = function()
                 button:SetAttribute("unit", unit)
                 button:SetAttribute("type1", "spell")
                 button:SetAttribute("spell1", mySpells.normal[i] and mySpells.normal[i].spellId)
-                button:SetAttribute("shift-type1", "spell")
-                button:SetAttribute("shift-spell1", mySpells.shift[i] and mySpells.shift[i].spellId)
+                if mySpells.shift and mySpells.shift[i] and mySpells.shift[i].spellId then
+                    button:SetAttribute("shift-type1", "spell")
+                    button:SetAttribute("shift-spell1", mySpells.shift[i] and mySpells.shift[i].spellId)
+                end
+                if mySpells.ctrl and mySpells.ctrl[i] and mySpells.ctrl[i].spellId then
+                    button:SetAttribute("ctrl-type1", "spell")
+                    button:SetAttribute("ctrl-spell1", mySpells.ctrl[i].spellId)
+                end
+                if mySpells.alt and mySpells.alt[i] and mySpells.alt[i].spellId then
+                    button:SetAttribute("alt-type1", "spell")
+                    button:SetAttribute("alt-spell1", mySpells.alt[i].spellId)
+                end
                 button:SetSize(ssize, ssize)
                 button.texture:SetColorTexture(1, 0, 0, 0)
                 button:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
@@ -253,9 +275,27 @@ LGF.RegisterCallback("EZPriest", "GETFRAME_REFRESH", function()
 end)
 
 function f:MODIFIER_STATE_CHANGED(event, key, state)
+    print_debug(event)
+    local prevKeyState = keyState
     if key == "LSHIFT" or key == "RSHIFT" then
-        print_debug(event)
         shift = state == 1
+    elseif key == "LCTRL" or key == "RCTRL" then
+        print_debug(event)
+        ctrl = state == 1
+    elseif key == "LALT" or key == "RALT" then
+        print_debug(event)
+        alt = state == 1
+    end
+    if not shift and not ctrl and not alt then
+        keyState = "normal"
+    elseif shift then
+        keyState = "shift"
+    elseif ctrl then
+        keyState = "ctrl"
+    elseif alt then
+        keyState = "alt"
+    end
+    if prevKeyState ~= keyState then
         updateStats()
         updateAllUnitColor()
     end
@@ -272,7 +312,7 @@ end
 function f:UNIT_POWER_UPDATE(event, unit)
     print_debug(event, unit)
     updateStats()
-    if mana < maxCost then
+    if maxCostTable[keyState] and mana < maxCostTable[keyState] then
         updateAllUnitColor()
     end
 end
