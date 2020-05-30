@@ -1,8 +1,6 @@
 local GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown, GetTime = GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown, GetTime
 local LGF = LibStub("LibGetFrame-1.0")
 local GetUnitFrame = LGF.GetUnitFrame
-local myClass = select(2, UnitClass("player"))
-if myClass ~= "PRIEST" then return end
 local debug = false
 
 local print_debug = function(...)
@@ -34,6 +32,9 @@ local spells = {
         }
     }
 }
+
+local myClass = select(2, UnitClass("player"))
+if not spells[myClass] then return end
 
 local mySpells = spells[myClass]
 
@@ -129,7 +130,7 @@ local updateUnitColor = function(unit)
     for i = 8, 1, -1 do
         local button = buttons[unit.."-"..i]
         if button then
-        local spell = activeSpells[i]
+            local spell = activeSpells[i]
             if spell then
                 if not spell.max then
                     spell.min, spell.max = getMinMax(spell.spellId)
