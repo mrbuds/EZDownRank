@@ -32,6 +32,31 @@ local spells = {
         },
         -- ctrl = {},
         -- alt = {},
+    },
+    SHAMAN = {
+        normal = {
+            { name = "LHW1", cost = 105, spellId = 8004, baseCastTime = 1.5 },
+            { name = "LHW2", cost = 145, spellId = 8008, baseCastTime = 1.5 },
+            { name = "LHW3", cost = 185, spellId = 8010, baseCastTime = 1.5 },
+            { name = "LHW4", cost = 235, spellId = 10466, baseCastTime = 1.5 },
+            { name = "LHW5", cost = 305, spellId = 10467, baseCastTime = 1.5 },
+            { name = "LHW6", cost = 380, spellId = 10468, baseCastTime = 1.5 },
+        },
+        shift = {
+            { name = "HW3", cost = 80, spellId = 547, baseCastTime = 2.5 },
+            { name = "HW4", cost = 155, spellId = 913, baseCastTime = 3 },
+            { name = "HW5", cost = 200, spellId = 939, baseCastTime = 3 },
+            { name = "HW6", cost = 265, spellId = 959, baseCastTime = 3 },
+            { name = "HW7", cost = 340, spellId = 8005, baseCastTime = 3 },
+            { name = "HW8", cost = 440, spellId = 10395, baseCastTime = 3 },
+            { name = "HW9", cost = 560, spellId = 10396, baseCastTime = 3 },
+            { name = "HW10", cost = 620, spellId = 25357, baseCastTime = 3 },
+        },
+        ctrl = {
+            { name = "CH1", cost = 260, spellId = 1064, baseCastTime = 2.5 },
+            { name = "CH2", cost = 315, spellId = 10622, baseCastTime = 2.5 },
+            { name = "CH3", cost = 405, spellId = 10623, baseCastTime = 2.5 },
+        }
     }
 }
 
