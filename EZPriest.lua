@@ -13,14 +13,14 @@ end
 local spells = {
     PRIEST = {
         normal = {
-            ranks = {
-                { name = "F1", cost = 125, spellId = 2061, baseCastTime = 1.5 },
-                { name = "F2", cost = 155, spellId = 9472, baseCastTime = 1.5 },
-                { name = "F3", cost = 185, spellId = 9473, baseCastTime = 1.5 },
-                { name = "F4", cost = 215, spellId = 9474, baseCastTime = 1.5 },
-                { name = "F5", cost = 265, spellId = 10915, baseCastTime = 1.5 },
-                { name = "F6", cost = 315, spellId = 10916, baseCastTime = 1.5 },
-                { name = "F7", cost = 380, spellId = 10917, baseCastTime = 1.5 },
+            ranks = { -- no more than 8
+                { name = "F1", cost = 125, spellId = 2061, baseCastTime = 1.5, levelLearned = 20 },
+                { name = "F2", cost = 155, spellId = 9472, baseCastTime = 1.5, levelLearned = 26 },
+                { name = "F3", cost = 185, spellId = 9473, baseCastTime = 1.5, levelLearned = 32 },
+                { name = "F4", cost = 215, spellId = 9474, baseCastTime = 1.5, levelLearned = 38 },
+                { name = "F5", cost = 265, spellId = 10915, baseCastTime = 1.5, levelLearned = 44 },
+                { name = "F6", cost = 315, spellId = 10916, baseCastTime = 1.5, levelLearned = 50 },
+                { name = "F7", cost = 380, spellId = 10917, baseCastTime = 1.5, levelLearned = 56 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(2, 15)
@@ -28,19 +28,24 @@ local spells = {
             end,
         },
         shift = {
-            ranks = {
-                { name = "H1", cost = 132, spellId = 2054, baseCastTime = 3 },
-                { name = "H2", cost = 174, spellId = 2055, baseCastTime = 3 },
-                { name = "H3", cost = 217, spellId = 6063, baseCastTime = 3 },
-                { name = "H4", cost = 259, spellId = 6064, baseCastTime = 3 },
-                { name = "GH1", cost = 314, spellId = 2060, baseCastTime = 3 },
-                { name = "GH2", cost = 387, spellId = 10963, baseCastTime = 3 },
-                { name = "GH3", cost = 463, spellId = 10964, baseCastTime = 3 },
-                { name = "GH4", cost = 557, spellId = 10965, baseCastTime = 3 },
+            ranks = { -- no more than 8
+                { name = "H1", cost = 155, spellId = 2054, baseCastTime = 3, levelLearned = 16 },
+                { name = "H2", cost = 205, spellId = 2055, baseCastTime = 3, levelLearned = 22 },
+                { name = "H3", cost = 255, spellId = 6063, baseCastTime = 3, levelLearned = 28 },
+                { name = "H4", cost = 305, spellId = 6064, baseCastTime = 3, levelLearned = 34 },
+                { name = "GH1", cost = 370, spellId = 2060, baseCastTime = 3, levelLearned = 40 },
+                { name = "GH2", cost = 455, spellId = 10963, baseCastTime = 3, levelLearned = 46 },
+                { name = "GH3", cost = 545, spellId = 10964, baseCastTime = 3, levelLearned = 52 },
+                { name = "GH4", cost = 655, spellId = 10965, baseCastTime = 3, levelLearned = 58 },
+                -- { name = "GH5", cost = 710, spellId = ??, baseCastTime = 3, levelLearned = 60 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(2, 15)
                 return 1 + (rank * 0.02)
+            end,
+            costFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(2, 10)
+                return 1 - (rank * 0.05)
             end,
         },
         -- ctrl = {},
@@ -48,86 +53,109 @@ local spells = {
     },
     SHAMAN = {
         normal = {
-            ranks = {
-                { name = "LHW1", cost = 105, spellId = 8004, baseCastTime = 1.5 },
-                { name = "LHW2", cost = 145, spellId = 8008, baseCastTime = 1.5 },
-                { name = "LHW3", cost = 185, spellId = 8010, baseCastTime = 1.5 },
-                { name = "LHW4", cost = 235, spellId = 10466, baseCastTime = 1.5 },
-                { name = "LHW5", cost = 305, spellId = 10467, baseCastTime = 1.5 },
-                { name = "LHW6", cost = 380, spellId = 10468, baseCastTime = 1.5 },
+            ranks = { -- no more than 8
+                { name = "LHW1", cost = 105, spellId = 8004, baseCastTime = 1.5, levelLearned = 20 },
+                { name = "LHW2", cost = 145, spellId = 8008, baseCastTime = 1.5, levelLearned = 28 },
+                { name = "LHW3", cost = 185, spellId = 8010, baseCastTime = 1.5, levelLearned = 36 },
+                { name = "LHW4", cost = 235, spellId = 10466, baseCastTime = 1.5, levelLearned = 44 },
+                { name = "LHW5", cost = 305, spellId = 10467, baseCastTime = 1.5, levelLearned = 52 },
+                { name = "LHW6", cost = 380, spellId = 10468, baseCastTime = 1.5, levelLearned = 60 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(3, 14)
                 return 1 + (rank * 0.02)
             end,
+            costFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(3, 2)
+                return 1 - (rank * 0.01)
+            end,
         },
         shift = {
-            ranks = {
-                -- { name = "HW1", cost = 25, spellId = 331, baseCastTime = 1.5 },
-                -- { name = "HW2", cost = 45, spellId = 332, baseCastTime = 2 },
-                { name = "HW3", cost = 80, spellId = 547, baseCastTime = 2.5 },
-                { name = "HW4", cost = 155, spellId = 913, baseCastTime = 3 },
-                { name = "HW5", cost = 200, spellId = 939, baseCastTime = 3 },
-                { name = "HW6", cost = 265, spellId = 959, baseCastTime = 3 },
-                { name = "HW7", cost = 340, spellId = 8005, baseCastTime = 3 },
-                { name = "HW8", cost = 440, spellId = 10395, baseCastTime = 3 },
-                { name = "HW9", cost = 560, spellId = 10396, baseCastTime = 3 },
-                { name = "HW10", cost = 620, spellId = 25357, baseCastTime = 3 },
+            ranks = { -- no more than 8
+                -- { name = "HW1", cost = 25, spellId = 331, baseCastTime = 1.5, levelLearned = 1 },
+                -- { name = "HW2", cost = 45, spellId = 332, baseCastTime = 2, levelLearned = 6 },
+                { name = "HW3", cost = 80, spellId = 547, baseCastTime = 2.5, levelLearned = 12 },
+                { name = "HW4", cost = 155, spellId = 913, baseCastTime = 3, levelLearned = 18 },
+                { name = "HW5", cost = 200, spellId = 939, baseCastTime = 3, levelLearned = 24 },
+                { name = "HW6", cost = 265, spellId = 959, baseCastTime = 3, levelLearned = 32 },
+                { name = "HW7", cost = 340, spellId = 8005, baseCastTime = 3, levelLearned = 40 },
+                { name = "HW8", cost = 440, spellId = 10395, baseCastTime = 3, levelLearned = 48 },
+                { name = "HW9", cost = 560, spellId = 10396, baseCastTime = 3, levelLearned = 56 },
+                { name = "HW10", cost = 620, spellId = 25357, baseCastTime = 3, levelLearned = 60 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(3, 14)
                 return 1 + (rank * 0.02)
+            end,
+            costFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(3, 2)
+                return 1 - (rank * 0.01)
             end,
         },
         ctrl = {
-            ranks = {
-                { name = "CH1", cost = 260, spellId = 1064, baseCastTime = 2.5 },
-                { name = "CH2", cost = 315, spellId = 10622, baseCastTime = 2.5 },
-                { name = "CH3", cost = 405, spellId = 10623, baseCastTime = 2.5 },
+            ranks = { -- no more than 8
+                { name = "CH1", cost = 260, spellId = 1064, baseCastTime = 2.5, levelLearned = 40 },
+                { name = "CH2", cost = 315, spellId = 10622, baseCastTime = 2.5, levelLearned = 46 },
+                { name = "CH3", cost = 405, spellId = 10623, baseCastTime = 2.5, levelLearned = 54 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(3, 14)
                 return 1 + (rank * 0.02)
             end,
-        }
+            costFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(3, 2)
+                return 1 - (rank * 0.01)
+            end,
+        },
+        -- alt = {},
     },
     DRUID = {
         normal = {
-            ranks = {
-                -- { name = "HT1", cost = 25, spellId = 5185, baseCastTime = 1.5 },
-                -- { name = "HT2", cost = 55, spellId = 5186, baseCastTime = 2 },
-                -- { name = "HT3", cost = 110, spellId = 5187, baseCastTime = 2.5 },
-                { name = "HT4", cost = 185, spellId = 5188, baseCastTime = 3 },
-                { name = "HT5", cost = 270, spellId = 5189, baseCastTime = 3.5 },
-                { name = "HT6", cost = 335, spellId = 6778, baseCastTime = 3.5 },
-                { name = "HT7", cost = 405, spellId = 8903, baseCastTime = 3.5 },
-                { name = "HT8", cost = 495, spellId = 9758, baseCastTime = 3.5 },
-                { name = "HT9", cost = 600, spellId = 9888, baseCastTime = 3.5 },
-                { name = "HT10", cost = 720, spellId = 9889, baseCastTime = 2.5 },
-                { name = "HT11", cost = 800, spellId = 25297, baseCastTime = 3.5 },
+            ranks = { -- no more than 8
+                -- { name = "HT1", cost = 25, spellId = 5185, baseCastTime = 1.5, levelLearned = 1 },
+                -- { name = "HT2", cost = 55, spellId = 5186, baseCastTime = 2, levelLearned = 8 },
+                -- { name = "HT3", cost = 110, spellId = 5187, baseCastTime = 2.5, levelLearned = 14 },
+                { name = "HT4", cost = 185, spellId = 5188, baseCastTime = 3, levelLearned = 20 },
+                { name = "HT5", cost = 270, spellId = 5189, baseCastTime = 3.5, levelLearned = 26 },
+                { name = "HT6", cost = 335, spellId = 6778, baseCastTime = 3.5, levelLearned = 32 },
+                { name = "HT7", cost = 405, spellId = 8903, baseCastTime = 3.5, levelLearned = 38 },
+                { name = "HT8", cost = 495, spellId = 9758, baseCastTime = 3.5, levelLearned = 44 },
+                { name = "HT9", cost = 600, spellId = 9888, baseCastTime = 3.5, levelLearned = 50 },
+                { name = "HT10", cost = 720, spellId = 9889, baseCastTime = 3.5, levelLearned = 56 },
+                { name = "HT11", cost = 800, spellId = 25297, baseCastTime = 3.5, levelLearned = 60 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(3, 12)
                 return 1 + (rank * 0.02)
+            end,
+            costFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(3, 9)
+                return 1 - (rank * 0.02)
             end,
         },
         shift = {
-            ranks = {
-                -- { name = "RG1", cost = 120, spellId = 8936, baseCastTime = 2 },
-                { name = "RG2", cost = 205, spellId = 8938, baseCastTime = 2 },
-                { name = "RG3", cost = 280, spellId = 8939, baseCastTime = 2 },
-                { name = "RG4", cost = 350, spellId = 8940, baseCastTime = 2 },
-                { name = "RG5", cost = 420, spellId = 8941, baseCastTime = 2 },
-                { name = "RG6", cost = 510, spellId = 9750, baseCastTime = 2 },
-                { name = "RG7", cost = 615, spellId = 9856, baseCastTime = 2 },
-                { name = "RG8", cost = 740, spellId = 9857, baseCastTime = 2 },
-                { name = "RG9", cost = 880, spellId = 9858, baseCastTime = 2 },
+            ranks = { -- no more than 8
+                -- { name = "RG1", cost = 120, spellId = 8936, baseCastTime = 2, levelLearned = 16 },
+                { name = "RG2", cost = 205, spellId = 8938, baseCastTime = 2, levelLearned = 18 },
+                { name = "RG3", cost = 280, spellId = 8939, baseCastTime = 2, levelLearned = 24 },
+                { name = "RG4", cost = 350, spellId = 8940, baseCastTime = 2, levelLearned = 30 },
+                { name = "RG5", cost = 420, spellId = 8941, baseCastTime = 2, levelLearned = 36 },
+                { name = "RG6", cost = 510, spellId = 9750, baseCastTime = 2, levelLearned = 42 },
+                { name = "RG7", cost = 615, spellId = 9856, baseCastTime = 2, levelLearned = 48 },
+                { name = "RG8", cost = 740, spellId = 9857, baseCastTime = 2, levelLearned = 54 },
+                { name = "RG9", cost = 880, spellId = 9858, baseCastTime = 2, levelLearned = 60 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(3, 12)
                 return 1 + (rank * 0.02)
             end,
-        }
+            costFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(3, 9)
+                return 1 - (rank * 0.02)
+            end,
+        },
+        -- ctrl = {},
+        -- alt = {},
     }
 }
 
@@ -136,7 +164,8 @@ if not spells[myClass] then return end
 
 local mySpells = spells[myClass]
 for _, v in pairs(mySpells) do
-    v.bonus = v.bonusFn()
+    v.bonus = v.bonusFn and v.bonusFn() or 1
+    v.costMod = v.costFn and v.costFn() or 1
 end
 
 local hiddenTooltip
@@ -171,10 +200,11 @@ local healingPower, mana
 local maxCostTable = {}
 for _, key in ipairs({"normal", "shift", "ctrl", "alt"}) do
     maxCostTable[key] = 0
-    if mySpells[key] then
-        for _, spell in pairs(mySpells[key].ranks) do
+    local spellForKeyMod = mySpells[key]
+    if spellForKeyMod then
+        for _, spell in pairs(spellForKeyMod.ranks) do
             if spell.cost > maxCostTable[key] then
-                maxCostTable[key] = spell.cost
+                maxCostTable[key] = spell.cost * spellForKeyMod.costMod
             end
         end
     end
@@ -250,13 +280,17 @@ local updateUnitColor = function(unit)
                     spell.bonus = spell.bonusFn()
                 end
                 if spell.max then
-                    local bonus = healingPower * (spell.baseCastTime / 3.5)
-                    local spellMaxHealing = (spell.max + bonus) * activeSpells.bonus -- calculate max heal
+                    local levelPenality = 1
+                    if spell.levelLearned < 20 then
+                        levelPenality = 1 - (20-spell.levelLearned) * 0.0375
+                    end
+                    local castTimePenality = spell.baseCastTime / 3.5
+                    local spellMaxHealing = (spell.max * activeSpells.bonus) + (healingPower * castTimePenality * levelPenality) -- calculate max heal
                     if spellMaxHealing > deficit then
                         button.texture:SetColorTexture(1, 0, 0, 0) -- invisible
                     else
                         local enoughMana
-                        if mana >= spell.cost then
+                        if mana >= spell.cost * activeSpells.costMod then
                             enoughMana = true
                         end
                         if not bestFound then
