@@ -237,6 +237,7 @@ local ctrl = false
 local alt = false
 local keyState = "normal"
 local healingPower, mana
+local myLevel = UnitLevel("player")
 
 local maxCostTable = {}
 for _, key in ipairs({"normal", "shift", "ctrl", "alt"}) do
@@ -313,7 +314,7 @@ local updateUnitColor = function(unit)
         local button = buttons[unit.."-"..i]
         if button then
             local spell = activeSpells.ranks[i]
-            if spell then
+            if spell and myLevel >= spell.levelLearned then
                 if not spell.max then
                     spell.min, spell.max = getMinMax(spell.spellId)
                 end
@@ -494,7 +495,12 @@ function f:UNIT_POWER_UPDATE(event, unit)
     end
 end
 
+function f:PLAYER_LEVEL_CHANGED()
+    myLevel = UnitLevel("player")
+end
+
 f:RegisterEvent("UNIT_HEALTH_FREQUENT")
 f:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 f:RegisterEvent("ADDON_LOADED")
 f:RegisterEvent("MODIFIER_STATE_CHANGED")
+f:RegisterEvent("PLAYER_LEVEL_CHANGED")
