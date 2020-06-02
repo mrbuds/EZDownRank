@@ -1,5 +1,5 @@
 local GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown = GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown
-local IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo = IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo
+local IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown = IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown
 local LGF = LibStub("LibGetFrame-1.0")
 local GetUnitFrame = LGF.GetUnitFrame
 local debug = false
@@ -10,7 +10,7 @@ local print_debug = function(...)
     end
 end
 
-local spells = {
+local spellsDB = {
     PRIEST = {
         normal = {
             ranks = { -- no more than 8
@@ -201,13 +201,19 @@ local spells = {
 }
 
 local myClass = select(2, UnitClass("player"))
-if not spells[myClass] then return end
+if not spellsDB[myClass] then return end
 
-local mySpells = spells[myClass]
-for _, v in pairs(mySpells) do
-    v.bonus = v.bonusFn and v.bonusFn() or 1
-    v.costMod = v.costFn and v.costFn() or 1
+local mySpells = spellsDB[myClass]
+local function updateSpells()
+    for _, v in pairs(mySpells) do
+        v.bonus = v.bonusFn and v.bonusFn() or 1
+        v.costMod = v.costFn and v.costFn() or 1
+        for _, spell in pairs(v.ranks) do
+            spell.known = IsSpellKnown(spell.spellId)
+        end
+    end
 end
+updateSpells()
 
 local hiddenTooltip
 local function GetHiddenTooltip()
@@ -237,7 +243,6 @@ local ctrl = false
 local alt = false
 local keyState = "normal"
 local healingPower, mana
-local myLevel = UnitLevel("player")
 
 local maxCostTable = {}
 for _, key in ipairs({"normal", "shift", "ctrl", "alt"}) do
@@ -314,7 +319,7 @@ local updateUnitColor = function(unit)
         local button = buttons[unit.."-"..i]
         if button then
             local spell = activeSpells.ranks[i]
-            if spell and myLevel >= spell.levelLearned then
+            if spell and spell.known then
                 if not spell.max then
                     spell.min, spell.max = getMinMax(spell.spellId)
                 end
@@ -495,12 +500,19 @@ function f:UNIT_POWER_UPDATE(event, unit)
     end
 end
 
-function f:PLAYER_LEVEL_CHANGED()
-    myLevel = UnitLevel("player")
+function f:SPELLS_CHANGED(event)
+    print_debug(event)
+    updateSpells()
+end
+
+function f:CHARACTER_POINTS_CHANGED(event)
+    print_debug(event)
+    updateSpells()
 end
 
 f:RegisterEvent("UNIT_HEALTH_FREQUENT")
 f:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 f:RegisterEvent("ADDON_LOADED")
 f:RegisterEvent("MODIFIER_STATE_CHANGED")
-f:RegisterEvent("PLAYER_LEVEL_CHANGED")
+f:RegisterEvent("SPELLS_CHANGED")
+f:RegisterEvent("CHARACTER_POINTS_CHANGED")
