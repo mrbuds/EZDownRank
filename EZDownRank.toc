@@ -1,10 +1,10 @@
 ## Interface: 11304
 ## X-Curse-Project-ID: 383394
-## Title: EZPriest
+## Title: EZDownRank
 ## Author: Buds
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## OptionalDeps: LibGetFrame-1.0 VuhDo
 
 embeds.xml
-EZPriest.lua
+EZDownRank.lua

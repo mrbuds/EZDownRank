@@ -218,7 +218,7 @@ updateSpells()
 local hiddenTooltip
 local function GetHiddenTooltip()
   if not hiddenTooltip then
-    hiddenTooltip = CreateFrame("GameTooltip", "EZPriestTooltip", nil, "GameTooltipTemplate")
+    hiddenTooltip = CreateFrame("GameTooltip", "EZDownRankTooltip", nil, "GameTooltipTemplate")
     hiddenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
     hiddenTooltip:AddFontStrings(
       hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
@@ -391,7 +391,7 @@ local InitSquares = function()
                 local buttonName = unit.."-"..i
                 local button = buttons[buttonName]
                 if not button then
-                    button = CreateFrame("Button", "EZPRIEST_BUTTON"..buttonName, f, "SecureActionButtonTemplate")
+                    button = CreateFrame("Button", "EZDOWNRANK_BUTTON"..buttonName, f, "SecureActionButtonTemplate")
                     button:SetFrameStrata("DIALOG")
                     buttons[buttonName] = button
                     button.texture = button:CreateTexture(nil, "DIALOG")
@@ -448,12 +448,12 @@ end)
 
 function f:ADDON_LOADED(event, addonName)
     print_debug(event, addonName)
-    if addonName == "EZPriest" then
+    if addonName == "EZDownRank" then
         DelayedUpdate()
     end
 end
 
-LGF.RegisterCallback("EZPriest", "GETFRAME_REFRESH", function()
+LGF.RegisterCallback("EZDownRank", "GETFRAME_REFRESH", function()
     Update()
 end)
 

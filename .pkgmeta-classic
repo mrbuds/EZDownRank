@@ -1,4 +1,4 @@
-package-as: EZPriest
+package-as: EZDownRank
 
 externals:
   Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
