@@ -1,5 +1,6 @@
 ## Interface: 11304
 ## X-Curse-Project-ID: 383394
+## X-WoWI-ID: 25592
 ## Title: EZDownRank
 ## Author: Buds
 ## DefaultState: Enabled
