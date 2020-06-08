@@ -1,5 +1,5 @@
 local GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown = GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown
-local IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown = IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown
+local IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown, UnitInParty = IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown, UnitInParty
 local LGF = LibStub("LibGetFrame-1.0")
 local GetUnitFrame = LGF.GetUnitFrame
 local debug = false
@@ -48,7 +48,27 @@ local spellsDB = {
                 return 1 - (rank * 0.05)
             end,
         },
-        -- ctrl = {},
+        ctrl = {
+            ranks = { -- no more than 8
+                { name = "POH1", cost = 410, spellId = 596, baseCastTime = 3, levelLearned = 30, coef = 3/3.5/3 },
+                { name = "POH2", cost = 560, spellId = 996, baseCastTime = 3, levelLearned = 40, coef = 3/3.5/3 },
+                { name = "POH3", cost = 770, spellId = 10960, baseCastTime = 3, levelLearned = 50, coef = 3/3.5/3 },
+                { name = "POH4", cost = 1030, spellId = 10961, baseCastTime = 3, levelLearned = 60, coef = 3/3.5/3 },
+                -- { name = "POH5", cost = 1070, spellId = 25316, baseCastTime = 3, levelLearned = 60 },
+            },
+            bonusFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(2, 15)
+                return 1 + (rank * 0.02)
+            end,
+            costFn = function()
+                return 1
+            end,
+            ownGroupOnly = true,
+            minMaxMatch = {
+                pos = 2,
+                regex = "(%d+) .+ (%d+) .+ (%d+)"
+            },
+        },
         -- alt = {},
     },
     SHAMAN = {
@@ -228,13 +248,15 @@ local function GetHiddenTooltip()
   return hiddenTooltip
 end
 
-local function getMinMax(spellId)
+local function getMinMax(spell)
     local tooltip = GetHiddenTooltip()
     tooltip:ClearLines()
-    tooltip:SetSpellByID(spellId)
+    tooltip:SetSpellByID(spell.spellId)
     local tooltipTextLine = select(9, tooltip:GetRegions())
     local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or ""
-    return tooltipText:match("(%d+) .+ (%d+)")
+    local pos = spell.minMaxMatch and spell.minMaxMatch.pos or 1
+    local regex = spell.minMaxMatch and spell.minMaxMatch.regex or "(%d+) .+ (%d+)"
+    return select(pos, tooltipText:match(regex))
 end
 
 local buttons = {}
@@ -319,9 +341,11 @@ local updateUnitColor = function(unit)
         local button = buttons[unit.."-"..i]
         if button then
             local spell = activeSpells.ranks[i]
-            if spell and spell.known then
+            if spell and spell.known
+            and (not spell.ownGroupOnly or UnitInParty(unit))
+            then
                 if not spell.max then
-                    spell.min, spell.max = getMinMax(spell.spellId)
+                    spell.min, spell.max = getMinMax(spell)
                 end
                 if spell.bonus == 0 and spell.bonusFn then
                     spell.bonus = spell.bonusFn()
@@ -331,7 +355,7 @@ local updateUnitColor = function(unit)
                     if spell.levelLearned < 20 then
                         levelPenality = 1 - (20-spell.levelLearned) * 0.0375
                     end
-                    local castTimePenality = spell.baseCastTime / 3.5
+                    local castTimePenality = spell.coef or spell.baseCastTime / 3.5
                     local spellMaxHealing = (spell.max * activeSpells.bonus) + (healingPower * castTimePenality * levelPenality) -- calculate max heal
                     if spellMaxHealing > deficit then
                         button.texture:SetColorTexture(1, 0, 0, 0) -- invisible

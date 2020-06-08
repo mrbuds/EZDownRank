@@ -3,6 +3,7 @@
 ## X-WoWI-ID: 25592
 ## Title: EZDownRank
 ## Author: Buds
+## Version: @project-version@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## OptionalDeps: LibGetFrame-1.0 VuhDo
