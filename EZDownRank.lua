@@ -1,5 +1,6 @@
 local GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown = GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown
 local IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown, UnitInParty = IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown, UnitInParty
+local UnitAura = UnitAura
 local LGF = LibStub("LibGetFrame-1.0")
 local GetUnitFrame = LGF.GetUnitFrame
 local debug = false
@@ -111,6 +112,16 @@ local spellsDB = {
                 local _, _, _, _, rank  = GetTalentInfo(3, 2)
                 return 1 - (rank * 0.01)
             end,
+            buffModifier = function(unit)
+                for i = 1, 255 do
+                   local name, _, stacks, _, _, _, _, _, _, spellId = UnitAura(unit, i, "HELPFUL")
+                   if not name then return 1 end
+                   if 29203 == spellId then
+                      return 1 + stacks * 0.06
+                   end
+                end
+                return 1
+            end
         },
         ctrl = {
             ranks = { -- no more than 8
@@ -336,6 +347,7 @@ local updateUnitColor = function(unit)
     print_debug("updateUnitColor", unit)
     local activeSpells = mySpells[keyState] or mySpells.normal
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
+    local buffModifier = activeSpells.buffModifier and activeSpells.buffModifier(unit) or 1
     local bestFound
     for i = 8, 1, -1 do
         local button = buttons[unit.."-"..i]
@@ -357,6 +369,7 @@ local updateUnitColor = function(unit)
                     end
                     local castTimePenality = spell.coef or spell.baseCastTime / 3.5
                     local spellMaxHealing = (spell.max * activeSpells.bonus) + (healingPower * castTimePenality * levelPenality) -- calculate max heal
+                    spellMaxHealing = spellMaxHealing * buffModifier
                     if spellMaxHealing > deficit then
                         button.texture:SetColorTexture(1, 0, 0, 0) -- invisible
                     else
