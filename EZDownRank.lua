@@ -259,14 +259,14 @@ local function GetHiddenTooltip()
   return hiddenTooltip
 end
 
-local function getMinMax(spell)
+local function getMinMax(spell, minMaxMatch)
     local tooltip = GetHiddenTooltip()
     tooltip:ClearLines()
     tooltip:SetSpellByID(spell.spellId)
     local tooltipTextLine = select(9, tooltip:GetRegions())
     local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or ""
-    local pos = spell.minMaxMatch and spell.minMaxMatch.pos or 1
-    local regex = spell.minMaxMatch and spell.minMaxMatch.regex or "(%d+) .+ (%d+)"
+    local pos = minMaxMatch and minMaxMatch.pos or 1
+    local regex = minMaxMatch and minMaxMatch.regex or "(%d+) .- (%d+)"
     return select(pos, tooltipText:match(regex))
 end
 
@@ -357,10 +357,10 @@ local updateUnitColor = function(unit)
             and (not spell.ownGroupOnly or UnitInParty(unit))
             then
                 if not spell.max then
-                    spell.min, spell.max = getMinMax(spell)
+                    spell.min, spell.max = getMinMax(spell, activeSpells.minMaxMatch)
                 end
-                if spell.bonus == 0 and spell.bonusFn then
-                    spell.bonus = spell.bonusFn()
+                if activeSpells.bonus == 0 and activeSpells.bonusFn then
+                    activeSpells.bonus = activeSpells.bonusFn()
                 end
                 if spell.max then
                     local levelPenality = 1
@@ -370,6 +370,7 @@ local updateUnitColor = function(unit)
                     local castTimePenality = spell.coef or spell.baseCastTime / 3.5
                     local spellMaxHealing = (spell.max * activeSpells.bonus) + (healingPower * castTimePenality * levelPenality) -- calculate max heal
                     spellMaxHealing = spellMaxHealing * buffModifier
+                    print_debug(("name: %s, max: %d, cmax: %d"):format(spell.name, spell.max, spellMaxHealing))
                     if spellMaxHealing > deficit then
                         button.texture:SetColorTexture(1, 0, 0, 0) -- invisible
                     else
