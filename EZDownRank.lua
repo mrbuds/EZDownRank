@@ -354,7 +354,7 @@ local updateUnitColor = function(unit)
         if button then
             local spell = activeSpells.ranks[i]
             if spell and spell.known
-            and (not spell.ownGroupOnly or UnitInParty(unit))
+            and (not activeSpells.ownGroupOnly or UnitInParty(unit))
             then
                 if not spell.max then
                     spell.min, spell.max = getMinMax(spell, activeSpells.minMaxMatch)
