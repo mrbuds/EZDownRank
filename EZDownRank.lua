@@ -531,7 +531,9 @@ function f:ADDON_LOADED(event, addonName)
     if addonName == "EZDownRank" then
         if type(DB) ~= "table" then
             DB = {}
+        end
             for k, v in pairs(defaults) do
+            if DB[k] == nil then
                 DB[k] = v
             end
         end
