@@ -404,8 +404,12 @@ local updateUnitColor = function(unit)
                         end
                     end
                 end
+                if DB.border then
+                    button:SetBackdropBorderColor(DB.borderColor[1], DB.borderColor[2], DB.borderColor[3], DB.alpha)
+                end
             else
                 button:SetBackdropColor(1, 0, 0, 0) -- invisible
+                button:SetBackdropBorderColor(0, 0, 0, 0)
             end
         end
     end
