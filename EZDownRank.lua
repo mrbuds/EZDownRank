@@ -11,17 +11,18 @@ local print_debug = function(...)
     end
 end
 
-local button_size = 15
-local columns = 4
-local rows = 2
-local border = false
-local tooltip = false
-
-local alpha = 0.3
-local borderColor = {0, 0, 0, alpha}
-local bestSpellColor = {0, 1, 0, alpha} -- green
-local notbestSpellColor = {1, 1, 0, alpha} -- yellow
-local notenoughManaColor = {1, 0.5, 0, alpha} -- orange
+local defaults = {
+    button_size = 15,
+    columns = 4,
+    rows = 2,
+    border = false,
+    tooltip = false,
+    alpha = 0.3,
+    borderColor = {0, 0, 0},
+    bestSpellColor = {0, 1, 0}, -- green
+    notbestSpellColor = {1, 1, 0}, -- yellow
+    notenoughManaColor = {1, 0.5, 0}, -- orange
+}
 
 local spellsDB = {
     PRIEST = {
@@ -359,7 +360,7 @@ local updateUnitColor = function(unit)
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
     local buffModifier = activeSpells.buffModifier and activeSpells.buffModifier(unit) or 1
     local bestFound
-    for i = columns * rows, 1, -1 do
+    for i = DB.columns * DB.rows, 1, -1 do
         local button = buttons[unit.."-"..i]
         if button then
             local spell = activeSpells.ranks[i]
@@ -390,16 +391,16 @@ local updateUnitColor = function(unit)
                         end
                         if not bestFound then
                             if enoughMana then
-                                button:SetBackdropColor(bestSpellColor[1], bestSpellColor[2], bestSpellColor[3], bestSpellColor[4]) -- green
+                                button:SetBackdropColor(DB.bestSpellColor[1], DB.bestSpellColor[2], DB.bestSpellColor[3], DB.alpha) -- green
                             end
                             bestFound = true
                         else
                             if enoughMana then
-                                button:SetBackdropColor(notbestSpellColor[1], notbestSpellColor[2], notbestSpellColor[3], notbestSpellColor[4]) -- yellow
+                                button:SetBackdropColor(DB.notbestSpellColor[1], DB.notbestSpellColor[2], DB.notbestSpellColor[3], DB.alpha) -- yellow
                             end
                         end
                         if not enoughMana then
-                            button:SetBackdropColor(notenoughManaColor[1], notbestSpellColor[2], notbestSpellColor[3], notbestSpellColor[4]) -- orange
+                            button:SetBackdropColor(DB.notenoughManaColor[1], DB.notbestSpellColor[2], DB.notbestSpellColor[3], DB.alpha) -- orange
                         end
                     end
                 end
@@ -428,11 +429,11 @@ local InitSquares = function()
         local frame = GetUnitFrame(unit)
         if frame then
             local scale = frame:GetEffectiveScale()
-            local ssize = button_size * scale
-            local x_space = (((frame:GetWidth() * scale) - (columns * ssize))) / 2
-            local y_space = (((frame:GetHeight() * scale) - (rows * ssize))) / 2
+            local ssize = DB.button_size * scale
+            local x_space = (((frame:GetWidth() * scale) - (DB.columns * ssize))) / 2
+            local y_space = (((frame:GetHeight() * scale) - (DB.rows * ssize))) / 2
             local x, y = x_space, - y_space
-            for i = 1, columns * rows do
+            for i = 1, DB.columns * DB.rows do
                 local buttonName = unit.."-"..i
                 local button = buttons[buttonName]
                 if not button then
@@ -462,12 +463,12 @@ local InitSquares = function()
                 end
                 button:SetSize(ssize, ssize)
                 button:SetBackdropColor(1, 0, 0, 0)
-                if border then
-                    button:SetBackdropBorderColor(borderColor[1], borderColor[2], borderColor[3], borderColor[4])
+                if DB.border then
+                    button:SetBackdropBorderColor(DB.borderColor[1], DB.borderColor[2], DB.borderColor[3], DB.alpha)
                 else
                     button:SetBackdropBorderColor(0, 0, 0, 0)
                 end
-                if tooltip then
+                if DB.tooltip then
                     button:SetScript("OnEnter", function()
                         GameTooltip:SetOwner(button, "ANCHOR_RIGHT", 0, 0)
                         local spellid = mySpells[keyState]
@@ -488,7 +489,7 @@ local InitSquares = function()
                 end
                 -- position button
                 button:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
-                if i % columns == 0 then
+                if i % DB.columns == 0 then
                     x = x_space
                     y = y - ssize
                 else
@@ -522,6 +523,12 @@ end)
 function f:ADDON_LOADED(event, addonName)
     print_debug(event, addonName)
     if addonName == "EZDownRank" then
+        if type(DB) ~= "table" then
+            DB = {}
+            for k, v in pairs(defaults) do
+                DB[k] = v
+            end
+        end
         DelayedUpdate()
     end
 end
@@ -590,7 +597,7 @@ f:RegisterEvent("MODIFIER_STATE_CHANGED")
 f:RegisterEvent("SPELLS_CHANGED")
 f:RegisterEvent("CHARACTER_POINTS_CHANGED")
 
-SLASH_EZDOWNRANK1 = "/ezdownrank"
+SLASH_EZDOWNRANK1, SLASH_EZDOWNRANK2 = "/ezdownrank", "/ezdr"
 SlashCmdList["EZDOWNRANK"] = function(input)
     if InCombatLockdown() then
         print("Can't change ezdownrank options while in combat")
@@ -606,20 +613,24 @@ SlashCmdList["EZDOWNRANK"] = function(input)
     end
     local num = args[1] and tonumber(args[1])
     if msg == "size" and num then
-        button_size = num
+        DB.button_size = num
         InitSquares()
     elseif msg == "columns" and num then
-        columns = num
+        DB.columns = num
         InitSquares()
     elseif msg == "rows" and num then
-        rows = num
+        DB.rows = num
         InitSquares()
     elseif msg == "border" then
-        border = not border
+        DB.border = not DB.border
         InitSquares()
     elseif msg == "tooltip" then
-        tooltip = not tooltip
+        DB.tooltip = not DB.tooltip
         InitSquares()
+    elseif msg == "reset" then
+        for k, v in pairs(defaults) do
+            DB[k] = v
+        end
     else
       print("EZDownRank commands:")
       print("/ezdownrank size <number>")
@@ -627,5 +638,6 @@ SlashCmdList["EZDOWNRANK"] = function(input)
       print("/ezdownrank rows <number>")
       print("/ezdownrank border")
       print("/ezdownrank tooltip")
+      print("/ezdownrank reset")
     end
 end

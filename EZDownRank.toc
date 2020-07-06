@@ -7,6 +7,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## OptionalDeps: LibGetFrame-1.0 VuhDo
+## SavedVariables: DB
 
 embeds.xml
 EZDownRank.lua
