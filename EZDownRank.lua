@@ -368,7 +368,7 @@ local updateUnitColor = function(unit)
         if button then
             local spell = activeSpells.ranks[i]
             if spell and spell.known
-            and (not activeSpells.ownGroupOnly or UnitInParty(unit))
+            and (not activeSpells.ownGroupOnly or UnitInParty(unit) or unit == "player")
             and not dead
             then
                 if not spell.max then
