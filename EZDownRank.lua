@@ -1,6 +1,6 @@
 local GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown = GetSpellBonusHealing, UnitPower, UnitHealthMax, UnitHealth, CreateFrame, C_Timer, InCombatLockdown
 local IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown, UnitInParty = IsInRaid, GetNumSubgroupMembers, GetNumGroupMembers, GetTime, GetTalentInfo, IsSpellKnown, UnitInParty
-local UnitAura = UnitAura
+local UnitAura, UnitIsDeadOrGhost = UnitAura, UnitIsDeadOrGhost
 local LGF = LibStub("LibGetFrame-1.0")
 local GetUnitFrame = LGF.GetUnitFrame
 local debug = false
@@ -358,6 +358,7 @@ local updateUnitColor = function(unit)
     print_debug("updateUnitColor", unit)
     local activeSpells = mySpells[keyState] or mySpells.normal
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
+    local dead = UnitIsDeadOrGhost(unit)
     local buffModifier = activeSpells.buffModifier and activeSpells.buffModifier(unit) or 1
     local bestFound
     for i = DB.columns * DB.rows, 1, -1 do
@@ -366,6 +367,7 @@ local updateUnitColor = function(unit)
             local spell = activeSpells.ranks[i]
             if spell and spell.known
             and (not activeSpells.ownGroupOnly or UnitInParty(unit))
+            and not dead
             then
                 if not spell.max then
                     spell.min, spell.max = getMinMax(spell, activeSpells.minMaxMatch)
