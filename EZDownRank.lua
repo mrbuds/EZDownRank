@@ -15,6 +15,8 @@ local defaults = {
     button_size = 15,
     columns = 4,
     rows = 2,
+    offsetX = 0,
+    offsetY = 0,
     border = false,
     tooltip = false,
     alpha = 0.3,
@@ -494,7 +496,7 @@ local InitSquares = function()
                     button:SetScript("OnLeave", nil)
                 end
                 -- position button
-                button:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
+                button:SetPoint("TOPLEFT", frame, "TOPLEFT", x + DB.offsetX, y + DB.offsetY)
                 if i % DB.columns == 0 then
                     x = x_space
                     y = y - ssize
@@ -532,7 +534,7 @@ function f:ADDON_LOADED(event, addonName)
         if type(DB) ~= "table" then
             DB = {}
         end
-            for k, v in pairs(defaults) do
+        for k, v in pairs(defaults) do
             if DB[k] == nil then
                 DB[k] = v
             end
@@ -620,6 +622,7 @@ SlashCmdList["EZDOWNRANK"] = function(input)
       end
     end
     local num = args[1] and tonumber(args[1])
+    local num2 = args[2] and tonumber(args[2])
     if msg == "size" and num then
         DB.button_size = num
         InitSquares()
@@ -628,6 +631,10 @@ SlashCmdList["EZDOWNRANK"] = function(input)
         InitSquares()
     elseif msg == "rows" and num then
         DB.rows = num
+        InitSquares()
+    elseif msg == "offset" and num then
+        DB.offsetX = num or 0
+        DB.offsetY = num2 or 0
         InitSquares()
     elseif msg == "border" then
         DB.border = not DB.border
@@ -640,12 +647,13 @@ SlashCmdList["EZDOWNRANK"] = function(input)
             DB[k] = v
         end
     else
-      print("EZDownRank commands:")
-      print("/ezdownrank size <number>")
-      print("/ezdownrank columns <number>")
-      print("/ezdownrank rows <number>")
-      print("/ezdownrank border")
-      print("/ezdownrank tooltip")
-      print("/ezdownrank reset")
+      print("Parameters for /ezdr or /ezdownrank command")
+      print("/ezdr size <number>")
+      print("/ezdr columns <number>")
+      print("/ezdr rows <number>")
+      print("/ezdr offset <x> <y>")
+      print("/ezdr border")
+      print("/ezdr tooltip")
+      print("/ezdr reset")
     end
 end
