@@ -15,6 +15,7 @@ local button_size = 15
 local columns = 4
 local rows = 2
 local border = false
+local tooltip = false
 
 local alpha = 0.3
 local borderColor = {0, 0, 0, alpha}
@@ -466,6 +467,26 @@ local InitSquares = function()
                 else
                     button:SetBackdropBorderColor(0, 0, 0, 0)
                 end
+                if tooltip then
+                    button:SetScript("OnEnter", function()
+                        GameTooltip:SetOwner(button, "ANCHOR_RIGHT", 0, 0)
+                        local spellid = mySpells[keyState]
+                            and mySpells[keyState].ranks
+                            and mySpells[keyState].ranks[i]
+                            and mySpells[keyState].ranks[i].spellId
+                        if spellid then
+                            GameTooltip:SetSpellByID(spellid)
+                            GameTooltip:Show()
+                        end
+                    end)
+                    button:SetScript("OnLeave", function()
+                        GameTooltip:Hide()
+                    end)
+                else
+                    button:SetScript("OnEnter", nil)
+                    button:SetScript("OnLeave", nil)
+                end
+                -- position button
                 button:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
                 if i % columns == 0 then
                     x = x_space
@@ -568,3 +589,43 @@ f:RegisterEvent("ADDON_LOADED")
 f:RegisterEvent("MODIFIER_STATE_CHANGED")
 f:RegisterEvent("SPELLS_CHANGED")
 f:RegisterEvent("CHARACTER_POINTS_CHANGED")
+
+SLASH_EZDOWNRANK1 = "/ezdownrank"
+SlashCmdList["EZDOWNRANK"] = function(input)
+    if InCombatLockdown() then
+        print("Can't change ezdownrank options while in combat")
+        return
+    end
+    local args, msg = {}
+    for v in string.gmatch(input, "%S+") do
+      if not msg then
+        msg = v
+      else
+        table.insert(args, v)
+      end
+    end
+    local num = args[1] and tonumber(args[1])
+    if msg == "size" and num then
+        button_size = num
+        InitSquares()
+    elseif msg == "columns" and num then
+        columns = num
+        InitSquares()
+    elseif msg == "rows" and num then
+        rows = num
+        InitSquares()
+    elseif msg == "border" then
+        border = not border
+        InitSquares()
+    elseif msg == "tooltip" then
+        tooltip = not tooltip
+        InitSquares()
+    else
+      print("EZDownRank commands:")
+      print("/ezdownrank size <number>")
+      print("/ezdownrank columns <number>")
+      print("/ezdownrank rows <number>")
+      print("/ezdownrank border")
+      print("/ezdownrank tooltip")
+    end
+end
