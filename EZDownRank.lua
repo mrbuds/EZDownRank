@@ -11,6 +11,17 @@ local print_debug = function(...)
     end
 end
 
+local button_size = 15
+local columns = 4
+local rows = 2
+local border = false
+
+local alpha = 0.3
+local borderColor = {0, 0, 0, alpha}
+local bestSpellColor = {0, 1, 0, alpha} -- green
+local notbestSpellColor = {1, 1, 0, alpha} -- yellow
+local notenoughManaColor = {1, 0.5, 0, alpha} -- orange
+
 local spellsDB = {
     PRIEST = {
         normal = {
@@ -341,15 +352,13 @@ local buttonHide = function(button)
     button:SetAttribute("alt-spell1", nil)
 end
 
-local alpha = 0.3
-
 local updateUnitColor = function(unit)
     print_debug("updateUnitColor", unit)
     local activeSpells = mySpells[keyState] or mySpells.normal
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
     local buffModifier = activeSpells.buffModifier and activeSpells.buffModifier(unit) or 1
     local bestFound
-    for i = 8, 1, -1 do
+    for i = columns * rows, 1, -1 do
         local button = buttons[unit.."-"..i]
         if button then
             local spell = activeSpells.ranks[i]
@@ -372,7 +381,7 @@ local updateUnitColor = function(unit)
                     spellMaxHealing = spellMaxHealing * buffModifier
                     print_debug(("name: %s, max: %d, cmax: %d"):format(spell.name, spell.max, spellMaxHealing))
                     if spellMaxHealing > deficit then
-                        button.texture:SetColorTexture(1, 0, 0, 0) -- invisible
+                        button:SetBackdropColor(1, 0, 0, 0) -- invisible
                     else
                         local enoughMana
                         if mana >= spell.cost * activeSpells.costMod then
@@ -380,21 +389,21 @@ local updateUnitColor = function(unit)
                         end
                         if not bestFound then
                             if enoughMana then
-                                button.texture:SetColorTexture(0, 1, 0, alpha) -- green
+                                button:SetBackdropColor(bestSpellColor[1], bestSpellColor[2], bestSpellColor[3], bestSpellColor[4]) -- green
                             end
                             bestFound = true
                         else
                             if enoughMana then
-                                button.texture:SetColorTexture(1, 1, 0, alpha) -- yellow
+                                button:SetBackdropColor(notbestSpellColor[1], notbestSpellColor[2], notbestSpellColor[3], notbestSpellColor[4]) -- yellow
                             end
                         end
                         if not enoughMana then
-                            button.texture:SetColorTexture(1, 0.5, 0, alpha) -- orange
+                            button:SetBackdropColor(notenoughManaColor[1], notbestSpellColor[2], notbestSpellColor[3], notbestSpellColor[4]) -- orange
                         end
                     end
                 end
             else
-                button.texture:SetColorTexture(1, 0, 0, 0) -- invisible
+                button:SetBackdropColor(1, 0, 0, 0) -- invisible
             end
         end
     end
@@ -407,8 +416,6 @@ local updateAllUnitColor = function()
     end
 end
 
-local size = 15
-
 local InitSquares = function()
     print_debug("InitSquares")
     for _, button in pairs(buttons) do
@@ -420,20 +427,22 @@ local InitSquares = function()
         local frame = GetUnitFrame(unit)
         if frame then
             local scale = frame:GetEffectiveScale()
-            -- local size = (frame:GetWidth() * scale - (space * scale * 2)) / 4
-            local ssize = size * scale
-            local x_space = (((frame:GetWidth() * scale) - (4 * ssize))) / 2
-            local y_space = (((frame:GetHeight() * scale) - (2 * ssize))) / 2
+            local ssize = button_size * scale
+            local x_space = (((frame:GetWidth() * scale) - (columns * ssize))) / 2
+            local y_space = (((frame:GetHeight() * scale) - (rows * ssize))) / 2
             local x, y = x_space, - y_space
-            for i = 1, 8 do
+            for i = 1, columns * rows do
                 local buttonName = unit.."-"..i
                 local button = buttons[buttonName]
                 if not button then
                     button = CreateFrame("Button", "EZDOWNRANK_BUTTON"..buttonName, f, "SecureActionButtonTemplate")
                     button:SetFrameStrata("DIALOG")
                     buttons[buttonName] = button
-                    button.texture = button:CreateTexture(nil, "DIALOG")
-                    button.texture:SetAllPoints()
+                    button:SetBackdrop({
+                        bgFile = [[Interface\AddOns\EZDownRank\Square_FullWhite.tga]],
+                        edgeFile = [[Interface\AddOns\EZDownRank\Square_FullWhite.tga]],
+                        edgeSize = 1,
+                    })
                 end
                 button:SetAttribute("unit", unit)
                 button:SetAttribute("type1", "spell")
@@ -451,9 +460,14 @@ local InitSquares = function()
                     button:SetAttribute("alt-spell1", mySpells.alt.ranks[i].spellId)
                 end
                 button:SetSize(ssize, ssize)
-                button.texture:SetColorTexture(1, 0, 0, 0)
+                button:SetBackdropColor(1, 0, 0, 0)
+                if border then
+                    button:SetBackdropBorderColor(borderColor[1], borderColor[2], borderColor[3], borderColor[4])
+                else
+                    button:SetBackdropBorderColor(0, 0, 0, 0)
+                end
                 button:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
-                if i == 4 then
+                if i % columns == 0 then
                     x = x_space
                     y = y - ssize
                 else
