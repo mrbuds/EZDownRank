@@ -26,6 +26,8 @@ local defaults = {
     notenoughManaColor = {1, 0.5, 0}, -- orange
 }
 
+local addonName = "EZDownRank"
+
 local spellsDB = {
     PRIEST = {
         normal = {
@@ -528,9 +530,10 @@ f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
 end)
 
-function f:ADDON_LOADED(event, addonName)
+function f:ADDON_LOADED(event, loadedAddon)
     print_debug(event, addonName)
-    if addonName == "EZDownRank" then
+    if loadedAddon == addonName then
+        self:UnregisterEvent("ADDON_LOADED")
         if type(DB) ~= "table" then
             DB = {}
         end
@@ -543,7 +546,7 @@ function f:ADDON_LOADED(event, addonName)
     end
 end
 
-LGF.RegisterCallback("EZDownRank", "GETFRAME_REFRESH", function()
+LGF.RegisterCallback(addonName, "GETFRAME_REFRESH", function()
     Update()
 end)
 
@@ -624,28 +627,16 @@ SlashCmdList["EZDOWNRANK"] = function(input)
     local num = args[1] and tonumber(args[1])
     local num2 = args[2] and tonumber(args[2])
     if msg == "size" and num then
-        if not num then
-            print("/ezdr size <width>")
-        else
-            DB.button_size = num
-            InitSquares()
-        end
+        DB.button_size = num
+        InitSquares()
     elseif msg == "layout" and num and num2 then
-        if not num and num2 then
-            print("/ezdr layout <#rows> <#columns>")
-        else
-            DB.rows = num
-            DB.columns = num2
-            InitSquares()
-        end
+        DB.rows = num
+        DB.columns = num2
+        InitSquares()
     elseif msg == "offset" and num then
-        if not num and num2 then
-            print("/ezdr offset <x> <y>")
-        else
-            DB.offsetX = num
-            DB.offsetY = num2
-            InitSquares()
-        end
+        DB.offsetX = num or 0
+        DB.offsetY = num2 or 0
+        InitSquares()
     elseif msg == "border" then
         DB.border = not DB.border
         InitSquares()
@@ -657,12 +648,164 @@ SlashCmdList["EZDOWNRANK"] = function(input)
             DB[k] = v
         end
     else
-      print("Parameters for /ezdr or /ezdownrank command")
-      print("/ezdr size <width>")
-      print("/ezdr layout <#rows> <#columns>")
-      print("/ezdr offset <x> <y>")
-      print("/ezdr border")
-      print("/ezdr tooltip")
-      print("/ezdr reset")
+        InterfaceOptionsFrame_OpenToCategory(addonName)
+        InterfaceOptionsFrame_OpenToCategory(addonName)
+        --[[
+        print("Parameters for /ezdr or /ezdownrank command")
+        print("/ezdr size <number>")
+        print("/ezdr layout <#rows> <#columns>")
+        print("/ezdr offset <x> <y>")
+        print("/ezdr border")
+        print("/ezdr tooltip")
+        print("/ezdr reset")
+        ]]--
     end
 end
+
+local optionsUI = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
+optionsUI.name = addonName
+optionsUI:SetScript("OnShow", function(frame)
+	local function newCheckbox(label, description, onClick)
+		local check = CreateFrame("CheckButton", addonName .. label, frame, "InterfaceOptionsCheckButtonTemplate")
+		check:SetScript("OnClick", function(self)
+			local tick = self:GetChecked()
+			onClick(self, tick and true or false)
+			if tick then
+				PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
+			else
+				PlaySound(857) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF
+			end
+		end)
+		check.label = _G[check:GetName() .. "Text"]
+		check.label:SetText(label)
+		check.tooltipText = label
+		check.tooltipRequirement = description
+		return check
+	end
+
+	local title = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	title:SetPoint("TOPLEFT", 16, -16)
+	title:SetText("EZDownRank")
+
+	local border = newCheckbox(
+		"Show Borders",
+		nil,
+        function(self, value)
+            DB.border = value
+            InitSquares()
+        end
+    )
+    border:SetChecked(DB.border)
+    border:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -15)
+
+	local tooltip = newCheckbox(
+		"Tooltips",
+		nil,
+        function(self, value)
+            DB.tooltip = value
+            InitSquares()
+        end
+    )
+    tooltip:SetChecked(DB.tooltip)
+    tooltip:SetPoint("TOPLEFT", border, "BOTTOMLEFT", 0, -15)
+
+
+    local sizeText = frame:CreateFontString("sizeText", "ARTWORK", "GameFontNormal")
+	sizeText:SetPoint("TOPLEFT", tooltip, "BOTTOMLEFT", 0, -15)
+	sizeText:SetText("Buttons Size")
+
+	local sizeSlider = CreateFrame("Slider", addonName.."sizeSlider", frame, "OptionsSliderTemplate")
+	sizeSlider:SetPoint("TOPLEFT", sizeText, "BOTTOMLEFT", 10, -15)
+    sizeSlider:SetScript("OnValueChanged", function(self, v)
+        DB.button_size = v
+        getglobal(sizeSlider:GetName().."Text"):SetText(DB.button_size)
+        InitSquares()
+    end)
+    sizeSlider:SetMinMaxValues(5, 30)
+    getglobal(sizeSlider:GetName().."Text"):SetText(DB.button_size)
+	getglobal(sizeSlider:GetName().."High"):SetText(30)
+	getglobal(sizeSlider:GetName().."Low"):SetText(5)
+    sizeSlider:SetValueStep(1)
+    sizeSlider:SetObeyStepOnDrag(true)
+    sizeSlider:SetValue(DB.button_size)
+
+
+    local rowText = frame:CreateFontString("rowText", "ARTWORK", "GameFontNormal")
+	rowText:SetPoint("TOPLEFT", sizeSlider, "BOTTOMLEFT", -10, -15)
+	rowText:SetText("Rows")
+
+	local rowSlider = CreateFrame("Slider", addonName.."rowSlider", frame, "OptionsSliderTemplate")
+	rowSlider:SetPoint("TOPLEFT", rowText, "BOTTOMLEFT", 10, -15)
+    rowSlider:SetScript("OnValueChanged", function(self, v)
+        DB.rows = v
+        getglobal(rowSlider:GetName().."Text"):SetText(DB.rows)
+        InitSquares()
+    end)
+    rowSlider:SetMinMaxValues(1, 8)
+    getglobal(rowSlider:GetName().."Text"):SetText(DB.rows)
+	getglobal(rowSlider:GetName().."High"):SetText(8)
+	getglobal(rowSlider:GetName().."Low"):SetText(1)
+    rowSlider:SetValueStep(1)
+    rowSlider:SetObeyStepOnDrag(true)
+    rowSlider:SetValue(DB.rows)
+
+    local columnText = frame:CreateFontString("columnText", "ARTWORK", "GameFontNormal")
+	columnText:SetPoint("TOPLEFT", rowSlider, "BOTTOMLEFT", -10, -15)
+	columnText:SetText("Columns")
+
+	local columnSlider = CreateFrame("Slider", addonName.."columnSlider", frame, "OptionsSliderTemplate")
+	columnSlider:SetPoint("TOPLEFT", columnText, "BOTTOMLEFT", 10, -15)
+    columnSlider:SetScript("OnValueChanged", function(self, v)
+        DB.columns = v
+        getglobal(columnSlider:GetName().."Text"):SetText(DB.columns)
+        InitSquares()
+    end)
+    columnSlider:SetMinMaxValues(1, 8)
+    getglobal(columnSlider:GetName().."Text"):SetText(DB.columns)
+	getglobal(columnSlider:GetName().."High"):SetText(8)
+	getglobal(columnSlider:GetName().."Low"):SetText(1)
+    columnSlider:SetValueStep(1)
+    columnSlider:SetObeyStepOnDrag(true)
+    columnSlider:SetValue(DB.columns)
+
+    local offsetXText = frame:CreateFontString("offsetXText", "ARTWORK", "GameFontNormal")
+	offsetXText:SetPoint("TOPLEFT", columnSlider, "BOTTOMLEFT", -10, -15)
+	offsetXText:SetText("Offset X")
+
+	local offsetXSlider = CreateFrame("Slider", addonName.."offsetXSlider", frame, "OptionsSliderTemplate")
+	offsetXSlider:SetPoint("TOPLEFT", offsetXText, "BOTTOMLEFT", 10, -15)
+    offsetXSlider:SetScript("OnValueChanged", function(self, v)
+        DB.offsetX = v
+        getglobal(offsetXSlider:GetName().."Text"):SetText(DB.offsetX)
+        InitSquares()
+    end)
+    offsetXSlider:SetMinMaxValues(-30, 30)
+    getglobal(offsetXSlider:GetName().."Text"):SetText(DB.offsetX)
+	getglobal(offsetXSlider:GetName().."High"):SetText(30)
+	getglobal(offsetXSlider:GetName().."Low"):SetText(-30)
+    offsetXSlider:SetValueStep(1)
+    offsetXSlider:SetObeyStepOnDrag(true)
+    offsetXSlider:SetValue(DB.offsetX)
+
+    local offsetYText = frame:CreateFontString("offsetYText", "ARTWORK", "GameFontNormal")
+	offsetYText:SetPoint("TOPLEFT", offsetXSlider, "BOTTOMLEFT", -10, -15)
+	offsetYText:SetText("Offset Y")
+
+	local offsetYSlider = CreateFrame("Slider", addonName.."offsetYSlider", frame, "OptionsSliderTemplate")
+	offsetYSlider:SetPoint("TOPLEFT", offsetYText, "BOTTOMLEFT", 10, -15)
+    offsetYSlider:SetScript("OnValueChanged", function(self, v)
+        DB.offsetY = v
+        getglobal(offsetYSlider:GetName().."Text"):SetText(DB.offsetY)
+        InitSquares()
+    end)
+    offsetYSlider:SetMinMaxValues(-30, 30)
+    getglobal(offsetYSlider:GetName().."Text"):SetText(DB.offsetY)
+	getglobal(offsetYSlider:GetName().."High"):SetText(30)
+	getglobal(offsetYSlider:GetName().."Low"):SetText(-30)
+    offsetYSlider:SetValueStep(1)
+    offsetYSlider:SetObeyStepOnDrag(true)
+    offsetYSlider:SetValue(DB.offsetY)
+
+    optionsUI:SetScript("OnShow", nil)
+end)
+InterfaceOptions_AddCategory(optionsUI)
