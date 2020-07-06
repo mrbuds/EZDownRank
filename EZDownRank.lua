@@ -624,16 +624,28 @@ SlashCmdList["EZDOWNRANK"] = function(input)
     local num = args[1] and tonumber(args[1])
     local num2 = args[2] and tonumber(args[2])
     if msg == "size" and num then
-        DB.button_size = num
-        InitSquares()
+        if not num then
+            print("/ezdr size <width>")
+        else
+            DB.button_size = num
+            InitSquares()
+        end
     elseif msg == "layout" and num and num2 then
-        DB.rows = num
-        DB.columns = num2
-        InitSquares()
+        if not num and num2 then
+            print("/ezdr layout <#rows> <#columns>")
+        else
+            DB.rows = num
+            DB.columns = num2
+            InitSquares()
+        end
     elseif msg == "offset" and num then
-        DB.offsetX = num or 0
-        DB.offsetY = num2 or 0
-        InitSquares()
+        if not num and num2 then
+            print("/ezdr offset <x> <y>")
+        else
+            DB.offsetX = num
+            DB.offsetY = num2
+            InitSquares()
+        end
     elseif msg == "border" then
         DB.border = not DB.border
         InitSquares()
@@ -646,7 +658,7 @@ SlashCmdList["EZDOWNRANK"] = function(input)
         end
     else
       print("Parameters for /ezdr or /ezdownrank command")
-      print("/ezdr size <number>")
+      print("/ezdr size <width>")
       print("/ezdr layout <#rows> <#columns>")
       print("/ezdr offset <x> <y>")
       print("/ezdr border")
