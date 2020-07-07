@@ -406,7 +406,7 @@ local updateUnitColor = function(unit)
                             end
                         end
                         if not enoughMana then
-                            button:SetBackdropColor(DB.notenoughManaColor[1], DB.notbestSpellColor[2], DB.notbestSpellColor[3], DB.alpha) -- orange
+                            button:SetBackdropColor(DB.notenoughManaColor[1], DB.notenoughManaColor[2], DB.notenoughManaColor[3], DB.alpha) -- orange
                         end
                     end
                 end
