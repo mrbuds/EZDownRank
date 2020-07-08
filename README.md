@@ -23,13 +23,13 @@ A World of Warcraft Classic addon for healers.
 
 ### Shaman
 
-- <kbd>1</kbd>-<kbd>6</kbd>: `Lesser Healing Wave` (Rank 1-6))
+- <kbd>1</kbd>-<kbd>6</kbd>: `Lesser Healing Wave` (Rank 1-6)
 - <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Healing Wave` (Rank 3-10)
 - <kbd>ctrl</kbd> + <kbd>1</kbd>-<kbd>3</kbd>: `Chan Heal` (Rank 1-3)
 
 ### Paladin
 
-- <kbd>1</kbd>-<kbd>6</kbd>: `Flash of Light` (Rank 1-6))
+- <kbd>1</kbd>-<kbd>6</kbd>: `Flash of Light` (Rank 1-6)
 - <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Holy Light` (Rank 1-8)
 
 ## Colors
