@@ -1,32 +1,36 @@
 # EZDownRank
 
-World of Warcraft Classic addon for healers.
+A World of Warcraft Classic addon for healers.
 
-Add 8 clickable buttons on each raid frame, their color change depending on health deficit, your spell power, mana and talents.
+## Features
 
-## Buttons
+* Adds up to 8 clickable buttons on each raid frame
+* Button colors dynamically change depending on health deficit, your spellpower, remaining mana, and talents.
+* Support for X and Y offset, column and row count, and gridlines.
+
+## Default Click Configuration
 
 ### Priest
 
-- Click on Buttons 1-7 cast "Flash Heal" from rank 1 to 7
-- Shift Buttons 1-4 (1st line) cast "Heal" from rank 1 to 4
-- Shift Buttons 5-8 (2nd line) cast "Greater Heal" from rank 1 to 4
+- <kbd>1</kbd>-<kbd>7</kbd>: `Flash Heal` (Rank 1-7)
+- <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>4</kbd>: `Heal` (Rank 1-4)
+- <kbd>shift</kbd> + <kbd>5</kbd>-<kbd>8</kbd>: `Greater Heal` (Rank 1-4)
 
 ### Druid
 
-- Click on Buttons 1-8 cast "Healing Touch" from rank 4 to 11
-- Shift Buttons 1-8 cast "Regrowth" from rank 2 to 9
+- <kbd>1</kbd>-<kbd>8</kbd>: `Healing Touch` (Rank 4 -11)
+- <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Regrowth` (Rank 2-9)
 
 ### Shaman
 
-- Click on Buttons 1-6 cast "Lesser Healing Wave" from rank 1 to 6
-- Shift Buttons 1-8 cast "Healing Wave" from rank 3 to 10
-- Control Buttons 1-3 cast "Chan Heal" from rank 1 to 3
+- <kbd>1</kbd>-<kbd>6</kbd>: `Lesser Healing Wave` (Rank 1-6))
+- <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Healing Wave` (Rank 3-10)
+- <kbd>ctrl</kbd> + <kbd>1</kbd>-<kbd>3</kbd>: `Chan Heal` (Rank 1-3)
 
 ### Paladin
 
-- Click on Buttons 1-6 cast "Flash of Light" from rank 1 to 6
-- Shift Buttons 1-8 cast "Holy Light" from rank 1 to 8
+- <kbd>1</kbd>-<kbd>6</kbd>: `Flash of Light` (Rank 1-6))
+- <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Holy Light` (Rank 1-8)
 
 ## Colors
 
@@ -37,19 +41,18 @@ Add 8 clickable buttons on each raid frame, their color change depending on heal
 
 ## Example
 
+[Here's a Twitch video demonstrating EZDownRank in BWL.](https://www.twitch.tv/videos/617061387?t=0h11m12s)
+
 ![img](https://i.imgur.com/E9L8EeK.png)
 
-Playing Priest, Shift is pressed, i have only 261 mana left
+Above: Playing a Priest, holding the Shift key, and I 261 mana remaining
 
-- Best healing spell for Lonlon is "Heal rank 4"
-- Best healing spell for Nemesis is "Greater Heal rank 2", max rank i can cast is "Heal rank 4"
-- Best healing spell for Laevan is "Greater Heal rank 3", max rank i can cast is "Heal rank 4"
-- My "Heal rank 1" will overheal Fraisette
-
-[Twitch video in action in BWL](https://www.twitch.tv/videos/617061387?t=0h11m12s)
+- Best heal for *Lonlon* is `Heal (Rank 4)`
+- Best heal for *Nemesis* is `Greater Heal (Rank 2)`, max rank I can cast is `Heal (Rank 4)`
+- Best heal for *Laevan* is `Greater Heal (Rank 3)`, max rank I can cast is `Heal (Rank 4)`
+- My `Heal (Rank 1)` will overheal *Fraisette*
 
 ## Q & A
 
-- Where are the settings ? There is no setting UI, you are free to edit whatever you want in the code for your own taste.
-- Where can i fill a bug report ? [Here](https://github.com/mrbuds/EZDownRank/issues/new)
-- Can i give you my money ? How kind of you ! I accept donation thrue [paypal](https://paypal.me/BudsWA).
+- Where can I file a bug report? [Here](https://github.com/mrbuds/EZDownRank/issues/new)
+- Can I buy you a beer? How kind of you! I accept donations via [PayPal](https://paypal.me/BudsWA).
