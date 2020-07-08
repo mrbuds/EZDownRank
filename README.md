@@ -41,7 +41,7 @@ A World of Warcraft Classic addon for healers.
 
 ## Example
 
-[Here's a Twitch video demonstrating EZDownRsnk in BWL.](https://www.twitch.tv/videos/617061387?t=0h11m12s)
+[Here's a Twitch video demonstrating EZDownRank in BWL.](https://www.twitch.tv/videos/617061387?t=0h11m12s)
 
 ![img](https://i.imgur.com/E9L8EeK.png)
 
@@ -55,4 +55,4 @@ Above: Playing a Priest, holding the Shift key, and I 261 mana remaining
 ## Q & A
 
 - Where can I file a bug report? [Here](https://github.com/mrbuds/EZDownRank/issues/new)
-- Can I buy you a beer? How kind of you! I accept donations via [paypal](https://paypal.me/BudsWA).
+- Can I buy you a beer? How kind of you! I accept donations via [PayPal](https://paypal.me/BudsWA).
