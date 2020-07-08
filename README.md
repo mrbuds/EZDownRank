@@ -47,10 +47,10 @@ A World of Warcraft Classic addon for healers.
 
 Above: Playing a Priest, holding the Shift key, and I 261 mana remaining
 
-- Best healing spell for Lonlon is "Heal rank 4"
-- Best healing spell for Nemesis is "Greater Heal rank 2", max rank i can cast is "Heal rank 4"
-- Best healing spell for Laevan is "Greater Heal rank 3", max rank i can cast is "Heal rank 4"
-- My "Heal rank 1" will overheal Fraisette
+- Best heal for *Lonlon* is `Heal (Rank 4)`
+- Best heal for *Nemesis* is `Greater Heal (Rank 2)`, max rank I can cast is `Heal (Rank 4)`
+- Best heal for *Laevan* is `Greater Heal (Rank 3)`, max rank I can cast is `Heal (Rank 4)`
+- My `Heal (Rank 1)` will overheal *Fraisette*
 
 ## Q & A
 
