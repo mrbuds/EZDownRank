@@ -202,7 +202,26 @@ local spellsDB = {
                 return 1 - (rank * 0.02)
             end,
         },
-        -- ctrl = {},
+        ctrl = {
+            ranks = { -- no more than 8
+                { name = "RJV4", cost = 105, spellId = 2090, baseCastTime = 0, levelLearned = 22},
+                { name = "RJV5", cost = 135, spellId = 2091, baseCastTime = 0, levelLearned = 28},
+                { name = "RJV6", cost = 160, spellId = 3627, baseCastTime = 0, levelLearned = 34},
+                { name = "RJV7", cost = 195, spellId = 8910, baseCastTime = 0, levelLearned = 40},
+                { name = "RJV8", cost = 235, spellId = 9839, baseCastTime = 0, levelLearned = 46},
+                { name = "RJV9", cost = 280, spellId = 9840, baseCastTime = 0, levelLearned = 52},
+                { name = "RJV10", cost = 335, spellId = 9841, baseCastTime = 0, levelLearned = 58},
+                { name = "RJV11", cost = 360, spellId = 25299, baseCastTime = 0, levelLearned = 60},
+            },
+            bonusFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(3, 12)
+                return 1 + (rank * 0.02)
+            end,
+            costFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(3, 9)
+                return 1 - (rank * 0.02)
+            end,
+        },
         -- alt = {},
     },
     PALADIN = {

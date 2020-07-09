@@ -20,6 +20,7 @@ A World of Warcraft Classic addon for healers.
 
 - <kbd>1</kbd>-<kbd>8</kbd>: `Healing Touch` (Rank 4 -11)
 - <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Regrowth` (Rank 2-9)
+- <kbd>ctrl</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Rejuvenation` (Rank 4-11)
 
 ### Shaman
 
