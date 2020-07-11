@@ -499,6 +499,10 @@ local InitSquares = function()
                 end
                 -- position button
                 button:SetPoint("TOPLEFT", frame, "TOPLEFT", x + DB.offsetX, y + DB.offsetY)
+                button:SetParent(frame)
+                button:SetIgnoreParentAlpha(true)
+                button:SetIgnoreParentScale(true)
+                button:SetFrameLevel(99)
                 if i % DB.columns == 0 then
                     x = x_space
                     y = y - ssize
