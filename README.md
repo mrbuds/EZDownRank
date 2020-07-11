@@ -25,7 +25,7 @@ A World of Warcraft Classic addon for healers.
 
 * <kbd>1</kbd>-<kbd>6</kbd>: `Lesser Healing Wave` (Rank 1-6)
 * <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Healing Wave` (Rank 3-10)
-* <kbd>ctrl</kbd> + <kbd>1</kbd>-<kbd>3</kbd>: `Chan Heal` (Rank 1-3)
+* <kbd>ctrl</kbd> + <kbd>1</kbd>-<kbd>3</kbd>: `Chain Heal` (Rank 1-3)
 
 ### Paladin
 
