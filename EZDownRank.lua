@@ -47,7 +47,7 @@ local spellsDB = {
         },
         shift = {
             ranks = { -- no more than 8
-                { name = "H1", cost = 155, spellId = 2054, baseCastTime = 3, levelLearned = 16 },
+                -- { name = "H1", cost = 155, spellId = 2054, baseCastTime = 3, levelLearned = 16 },
                 { name = "H2", cost = 205, spellId = 2055, baseCastTime = 3, levelLearned = 22 },
                 { name = "H3", cost = 255, spellId = 6063, baseCastTime = 3, levelLearned = 28 },
                 { name = "H4", cost = 305, spellId = 6064, baseCastTime = 3, levelLearned = 34 },
@@ -55,7 +55,7 @@ local spellsDB = {
                 { name = "GH2", cost = 455, spellId = 10963, baseCastTime = 3, levelLearned = 46 },
                 { name = "GH3", cost = 545, spellId = 10964, baseCastTime = 3, levelLearned = 52 },
                 { name = "GH4", cost = 655, spellId = 10965, baseCastTime = 3, levelLearned = 58 },
-                -- { name = "GH5", cost = 710, spellId = 25314, baseCastTime = 3, levelLearned = 60 },
+                { name = "GH5", cost = 710, spellId = 25314, baseCastTime = 3, levelLearned = 60 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(2, 15)
@@ -222,7 +222,7 @@ local spellsDB = {
         },
         shift = {
             ranks = { -- no more than 8
-                { name = "HL1", cost = 35, spellId = 635, baseCastTime = 2.5, levelLearned = 1 },
+                -- { name = "HL1", cost = 35, spellId = 635, baseCastTime = 2.5, levelLearned = 1 },
                 { name = "HL2", cost = 60, spellId = 639, baseCastTime = 2.5, levelLearned = 6 },
                 { name = "HL3", cost = 110, spellId = 647, baseCastTime = 2.5, levelLearned = 14 },
                 { name = "HL4", cost = 190, spellId = 1026, baseCastTime = 2.5, levelLearned = 22 },
@@ -230,7 +230,7 @@ local spellsDB = {
                 { name = "HL6", cost = 365, spellId = 3472, baseCastTime = 2.5, levelLearned = 38 },
                 { name = "HL7", cost = 465, spellId = 10328, baseCastTime = 2.5, levelLearned = 46 },
                 { name = "HL8", cost = 580, spellId = 10329, baseCastTime = 2.5, levelLearned = 54 },
-                -- { name = "HL9", cost = 660, spellId = 25292, baseCastTime = 2.5, levelLearned = 60 },
+                { name = "HL9", cost = 660, spellId = 25292, baseCastTime = 2.5, levelLearned = 60 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(1, 5)
