@@ -13,12 +13,12 @@ A World of Warcraft Classic addon for healers.
 ### Priest
 
 * <kbd>1</kbd>-<kbd>7</kbd>: `Flash Heal` (Rank 1-7)
-* <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>4</kbd>: `Heal` (Rank 1-4)
-* <kbd>shift</kbd> + <kbd>5</kbd>-<kbd>8</kbd>: `Greater Heal` (Rank 1-4)
+* <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>4</kbd>: `Heal` (Rank 2-4)
+* <kbd>shift</kbd> + <kbd>5</kbd>-<kbd>8</kbd>: `Greater Heal` (Rank 1-5)
 
 ### Druid
 
-* <kbd>1</kbd>-<kbd>8</kbd>: `Healing Touch` (Rank 4 -11)
+* <kbd>1</kbd>-<kbd>8</kbd>: `Healing Touch` (Rank 4-11)
 * <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Regrowth` (Rank 2-9)
 
 ### Shaman
@@ -30,7 +30,7 @@ A World of Warcraft Classic addon for healers.
 ### Paladin
 
 * <kbd>1</kbd>-<kbd>6</kbd>: `Flash of Light` (Rank 1-6)
-* <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Holy Light` (Rank 1-8)
+* <kbd>shift</kbd> + <kbd>1</kbd>-<kbd>8</kbd>: `Holy Light` (Rank 2-9)
 
 ## Colors
 
