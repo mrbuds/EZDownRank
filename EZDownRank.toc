@@ -1,6 +1,7 @@
 ## Interface: 11304
 ## X-Curse-Project-ID: 383394
 ## X-WoWI-ID: 25592
+## X-Wago-ID: Rn6VPLGd
 ## Title: EZDownRank
 ## Author: Buds
 ## Version: @project-version@
