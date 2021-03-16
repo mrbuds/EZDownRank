@@ -31,7 +31,7 @@ local addonName = "EZDownRank"
 local spellsDB = {
     PRIEST = {
         normal = {
-            ranks = { -- no more than 8
+            ranks = {
                 { name = "F1", cost = 125, spellId = 2061, baseCastTime = 1.5, levelLearned = 20, rank = 1 },
                 { name = "F2", cost = 155, spellId = 9472, baseCastTime = 1.5, levelLearned = 26, rank = 2 },
                 { name = "F3", cost = 185, spellId = 9473, baseCastTime = 1.5, levelLearned = 32, rank = 3 },
@@ -46,8 +46,8 @@ local spellsDB = {
             end,
         },
         shift = {
-            ranks = { -- no more than 8
-                -- { name = "H1", cost = 155, spellId = 2054, baseCastTime = 3, levelLearned = 16, rank = 1 },
+            ranks = {
+                { name = "H1", cost = 155, spellId = 2054, baseCastTime = 3, levelLearned = 16, rank = 1 },
                 { name = "H2", cost = 205, spellId = 2055, baseCastTime = 3, levelLearned = 22, rank = 2 },
                 { name = "H3", cost = 255, spellId = 6063, baseCastTime = 3, levelLearned = 28, rank = 3 },
                 { name = "H4", cost = 305, spellId = 6064, baseCastTime = 3, levelLearned = 34, rank = 4 },
@@ -67,12 +67,12 @@ local spellsDB = {
             end,
         },
         ctrl = {
-            ranks = { -- no more than 8
+            ranks = {
                 { name = "POH1", cost = 410, spellId = 596, baseCastTime = 3, levelLearned = 30, coef = 3/3.5/3, rank = 1 },
                 { name = "POH2", cost = 560, spellId = 996, baseCastTime = 3, levelLearned = 40, coef = 3/3.5/3, rank = 2 },
                 { name = "POH3", cost = 770, spellId = 10960, baseCastTime = 3, levelLearned = 50, coef = 3/3.5/3, rank = 3 },
                 { name = "POH4", cost = 1030, spellId = 10961, baseCastTime = 3, levelLearned = 60, coef = 3/3.5/3, rank = 4 },
-                -- { name = "POH5", cost = 1070, spellId = 25316, baseCastTime = 3, levelLearned = 60, rank = 5 },
+                { name = "POH5", cost = 1070, spellId = 25316, baseCastTime = 3, levelLearned = 60, rank = 5 },
             },
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(2, 15)
@@ -91,7 +91,7 @@ local spellsDB = {
     },
     SHAMAN = {
         normal = {
-            ranks = { -- no more than 8
+            ranks = {
                 { name = "LHW1", cost = 105, spellId = 8004, baseCastTime = 1.5, levelLearned = 20, rank = 1 },
                 { name = "LHW2", cost = 145, spellId = 8008, baseCastTime = 1.5, levelLearned = 28, rank = 2 },
                 { name = "LHW3", cost = 185, spellId = 8010, baseCastTime = 1.5, levelLearned = 36, rank = 3 },
@@ -109,9 +109,9 @@ local spellsDB = {
             end,
         },
         shift = {
-            ranks = { -- no more than 8
-                -- { name = "HW1", cost = 25, spellId = 331, baseCastTime = 1.5, levelLearned = 1, rank = 1 },
-                -- { name = "HW2", cost = 45, spellId = 332, baseCastTime = 2, levelLearned = 6, rank = 2 },
+            ranks = {
+                { name = "HW1", cost = 25, spellId = 331, baseCastTime = 1.5, levelLearned = 1, rank = 1 },
+                { name = "HW2", cost = 45, spellId = 332, baseCastTime = 2, levelLearned = 6, rank = 2 },
                 { name = "HW3", cost = 80, spellId = 547, baseCastTime = 2.5, levelLearned = 12, rank = 3 },
                 { name = "HW4", cost = 155, spellId = 913, baseCastTime = 3, levelLearned = 18, rank = 4 },
                 { name = "HW5", cost = 200, spellId = 939, baseCastTime = 3, levelLearned = 24, rank = 5 },
@@ -141,7 +141,7 @@ local spellsDB = {
             end
         },
         ctrl = {
-            ranks = { -- no more than 8
+            ranks = {
                 { name = "CH1", cost = 260, spellId = 1064, baseCastTime = 2.5, levelLearned = 40, rank = 1 },
                 { name = "CH2", cost = 315, spellId = 10622, baseCastTime = 2.5, levelLearned = 46, rank = 2 },
                 { name = "CH3", cost = 405, spellId = 10623, baseCastTime = 2.5, levelLearned = 54, rank = 3 },
@@ -159,10 +159,10 @@ local spellsDB = {
     },
     DRUID = {
         normal = {
-            ranks = { -- no more than 8
-                -- { name = "HT1", cost = 25, spellId = 5185, baseCastTime = 1.5, levelLearned = 1, rank = 1 },
-                -- { name = "HT2", cost = 55, spellId = 5186, baseCastTime = 2, levelLearned = 8, rank = 2 },
-                -- { name = "HT3", cost = 110, spellId = 5187, baseCastTime = 2.5, levelLearned = 14, rank = 3 },
+            ranks = {
+                { name = "HT1", cost = 25, spellId = 5185, baseCastTime = 1.5, levelLearned = 1, rank = 1 },
+                { name = "HT2", cost = 55, spellId = 5186, baseCastTime = 2, levelLearned = 8, rank = 2 },
+                { name = "HT3", cost = 110, spellId = 5187, baseCastTime = 2.5, levelLearned = 14, rank = 3 },
                 { name = "HT4", cost = 185, spellId = 5188, baseCastTime = 3, levelLearned = 20, rank = 4 },
                 { name = "HT5", cost = 270, spellId = 5189, baseCastTime = 3.5, levelLearned = 26, rank = 5 },
                 { name = "HT6", cost = 335, spellId = 6778, baseCastTime = 3.5, levelLearned = 32, rank = 6 },
@@ -182,8 +182,8 @@ local spellsDB = {
             end,
         },
         shift = {
-            ranks = { -- no more than 8
-                -- { name = "RG1", cost = 120, spellId = 8936, baseCastTime = 2, levelLearned = 16, rank = 1 },
+            ranks = {
+                { name = "RG1", cost = 120, spellId = 8936, baseCastTime = 2, levelLearned = 16, rank = 1 },
                 { name = "RG2", cost = 205, spellId = 8938, baseCastTime = 2, levelLearned = 18, rank = 2 },
                 { name = "RG3", cost = 280, spellId = 8939, baseCastTime = 2, levelLearned = 24, rank = 3 },
                 { name = "RG4", cost = 350, spellId = 8940, baseCastTime = 2, levelLearned = 30, rank = 4 },
@@ -207,7 +207,7 @@ local spellsDB = {
     },
     PALADIN = {
         normal = {
-            ranks = { -- no more than 8
+            ranks = {
                 { name = "FL1", cost = 35, spellId = 19750, baseCastTime = 1.5, levelLearned = 20, rank = 1 },
                 { name = "FL2", cost = 50, spellId = 19939, baseCastTime = 1.5, levelLearned = 26, rank = 2 },
                 { name = "FL3", cost = 70, spellId = 19940, baseCastTime = 1.5, levelLearned = 34, rank = 3 },
@@ -221,8 +221,8 @@ local spellsDB = {
             end,
         },
         shift = {
-            ranks = { -- no more than 8
-                -- { name = "HL1", cost = 35, spellId = 635, baseCastTime = 2.5, levelLearned = 1, rank = 1 },
+            ranks = {
+                { name = "HL1", cost = 35, spellId = 635, baseCastTime = 2.5, levelLearned = 1, rank = 1 },
                 { name = "HL2", cost = 60, spellId = 639, baseCastTime = 2.5, levelLearned = 6, rank = 2 },
                 { name = "HL3", cost = 110, spellId = 647, baseCastTime = 2.5, levelLearned = 14, rank = 3 },
                 { name = "HL4", cost = 190, spellId = 1026, baseCastTime = 2.5, levelLearned = 22, rank = 4 },
@@ -238,7 +238,7 @@ local spellsDB = {
             end,
         },
         ctrl = {
-            ranks = { -- no more than 8
+            ranks = {
                 { name = "HS1", cost = 225, spellId = 20473, baseCastTime = 1.5, levelLearned = 40, rank = 1 },
                 { name = "HS2", cost = 275, spellId = 20929, baseCastTime = 1.5, levelLearned = 48, rank = 2 },
                 { name = "HS3", cost = 325, spellId = 20930, baseCastTime = 1.5, levelLearned = 56, rank = 3 },
@@ -256,12 +256,24 @@ local function updateSpells()
     for _, v in pairs(mySpells) do
         v.bonus = v.bonusFn and v.bonusFn() or 1
         v.costMod = v.costFn and v.costFn() or 1
+        v.nbActive = 0
         for _, spell in pairs(v.ranks) do
             spell.known = IsSpellKnown(spell.spellId)
+            if spell.known then
+                v.nbActive = v.nbActive + 1
+            end
         end
     end
 end
 updateSpells()
+
+local function spellForButton(mod, i, nbButtons)
+    local spellsForMod = mySpells[mod]
+    if spellsForMod then
+        local diff = spellsForMod.nbActive > nbButtons and spellsForMod.nbActive - nbButtons or 0
+        return spellsForMod.ranks[i + diff]
+    end
+end
 
 local hiddenTooltip
 local function GetHiddenTooltip()
@@ -365,10 +377,11 @@ local updateUnitColor = function(unit)
     local dead = UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)
     local buffModifier = activeSpells.buffModifier and activeSpells.buffModifier(unit) or 1
     local bestFound
-    for i = DB.columns * DB.rows, 1, -1 do
+    local nbButtons = DB.columns * DB.rows
+    for i = nbButtons, 1, -1  do
         local button = buttons[unit.."-"..i]
         if button then
-            local spell = activeSpells.ranks[i]
+            local spell = spellForButton(keyState, i, nbButtons)
             if spell and spell.known
             and (not activeSpells.ownGroupOnly or UnitInParty(unit) or unit == "player")
             and not dead
@@ -443,7 +456,8 @@ local InitSquares = function()
             local x_space = (((frame:GetWidth() * scale) - (DB.columns * ssize))) / 2
             local y_space = (((frame:GetHeight() * scale) - (DB.rows * ssize))) / 2
             local x, y = x_space, - y_space
-            for i = 1, DB.columns * DB.rows do
+            local nbButtons = DB.columns * DB.rows
+            for i = 1, nbButtons do
                 local buttonName = unit.."-"..i
                 local button = buttons[buttonName]
                 if not button then
@@ -458,18 +472,14 @@ local InitSquares = function()
                 end
                 button:SetAttribute("unit", unit)
                 button:SetAttribute("type1", "spell")
-                button:SetAttribute("spell1", mySpells.normal.ranks[i] and mySpells.normal.ranks[i].spellId)
-                if mySpells.shift and mySpells.shift.ranks[i] and mySpells.shift.ranks[i].spellId then
-                    button:SetAttribute("shift-type1", "spell")
-                    button:SetAttribute("shift-spell1", mySpells.shift.ranks[i].spellId)
-                end
-                if mySpells.ctrl and mySpells.ctrl.ranks[i] and mySpells.ctrl.ranks[i].spellId then
-                    button:SetAttribute("ctrl-type1", "spell")
-                    button:SetAttribute("ctrl-spell1", mySpells.ctrl.ranks[i].spellId)
-                end
-                if mySpells.alt and mySpells.alt.ranks[i] and mySpells.alt.ranks[i].spellId then
-                    button:SetAttribute("alt-type1", "spell")
-                    button:SetAttribute("alt-spell1", mySpells.alt.ranks[i].spellId)
+                local normalSpell = spellForButton("normal", i, nbButtons)
+                button:SetAttribute("spell1", normalSpell.spellId)
+                for _, mod in pairs({"shift", "ctrl", "alt"}) do
+                    local spell = spellForButton(mod, i, nbButtons)
+                    if spell then
+                        button:SetAttribute(mod.."-type1", "spell")
+                        button:SetAttribute(mod.."-spell1", spell.spellId)
+                    end
                 end
                 button:SetSize(ssize, ssize)
                 button:SetBackdropColor(1, 0, 0, 0)
