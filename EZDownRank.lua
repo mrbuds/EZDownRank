@@ -378,7 +378,7 @@ local updateUnitColor = function(unit)
     local buffModifier = activeSpells.buffModifier and activeSpells.buffModifier(unit) or 1
     local bestFound
     local nbButtons = DB.columns * DB.rows
-    for i = nbButtons, 1, -1  do
+    for i = nbButtons, 1, -1 do
         local button = buttons[unit.."-"..i]
         if button then
             local spell = spellForButton(keyState, i, nbButtons)
@@ -471,14 +471,12 @@ local InitSquares = function()
                     })
                 end
                 button:SetAttribute("unit", unit)
-                button:SetAttribute("type1", "spell")
-                local normalSpell = spellForButton("normal", i, nbButtons)
-                button:SetAttribute("spell1", normalSpell.spellId)
-                for _, mod in pairs({"shift", "ctrl", "alt"}) do
+                for _, mod in pairs({"normal", "shift", "ctrl", "alt"}) do
                     local spell = spellForButton(mod, i, nbButtons)
-                    if spell then
-                        button:SetAttribute(mod.."-type1", "spell")
-                        button:SetAttribute(mod.."-spell1", spell.spellId)
+                    if spell and spell.known then
+                        local macroMod = mod == "normal" and "" or mod .. "-"
+                        button:SetAttribute(macroMod.."type1", "spell")
+                        button:SetAttribute(macroMod.."spell1", spell.spellId)
                     end
                 end
                 button:SetSize(ssize, ssize)
@@ -495,8 +493,9 @@ local InitSquares = function()
                             and mySpells[keyState].ranks
                             and mySpells[keyState].ranks[i]
                             and mySpells[keyState].ranks[i].spellId
-                        if spellid then
-                            GameTooltip:SetSpellByID(spellid)
+                        local spell = spellForButton(keyState, i, nbButtons)
+                        if spell and spell.known and spell.spellId then
+                            GameTooltip:SetSpellByID(spell.spellId)
                             GameTooltip:Show()
                         end
                     end)
@@ -564,18 +563,12 @@ LGF.RegisterCallback(addonName, "GETFRAME_REFRESH", function()
     Update()
 end)
 
-function f:MODIFIER_STATE_CHANGED(event, key, state)
-    print_debug(event)
+f:SetScript("OnUpdate", function(self, elapsed)
+    --print_debug(event)
     local prevKeyState = keyState
-    if key == "LSHIFT" or key == "RSHIFT" then
-        shift = state == 1
-    elseif key == "LCTRL" or key == "RCTRL" then
-        print_debug(event)
-        ctrl = state == 1
-    elseif key == "LALT" or key == "RALT" then
-        print_debug(event)
-        alt = state == 1
-    end
+    shift = IsShiftKeyDown()
+    ctrl = IsControlKeyDown()
+    alt = IsAltKeyDown()
     if not shift and not ctrl and not alt then
         keyState = "normal"
     elseif shift then
@@ -589,7 +582,7 @@ function f:MODIFIER_STATE_CHANGED(event, key, state)
         updateStats()
         updateAllUnitColor()
     end
-end
+end)
 
 function f:UNIT_HEALTH_FREQUENT(event, unit)
     print_debug(event, unit)
@@ -620,7 +613,6 @@ end
 f:RegisterEvent("UNIT_HEALTH_FREQUENT")
 f:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 f:RegisterEvent("ADDON_LOADED")
-f:RegisterEvent("MODIFIER_STATE_CHANGED")
 f:RegisterEvent("SPELLS_CHANGED")
 f:RegisterEvent("CHARACTER_POINTS_CHANGED")
 
