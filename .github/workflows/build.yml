@@ -25,7 +25,8 @@ jobs:
 
     - name: Create Classic Package
       uses: BigWigsMods/packager@master
-        args: -g "classic,bc"
+      with:
+        args: "-g classic,bc"
       env:
         CF_API_KEY: ${{ secrets.CF_API_KEY }}
         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
