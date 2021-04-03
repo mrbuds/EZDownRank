@@ -24,7 +24,8 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Create Classic Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.5 -m .pkgmeta-classic
+      uses: BigWigsMods/packager@master
+        args: -g classic,bc
       env:
         CF_API_KEY: ${{ secrets.CF_API_KEY }}
         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
