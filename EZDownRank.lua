@@ -106,13 +106,17 @@ local spellsDB = {
             },
         },
         alt = {
-            {
+            ranks = {
                 { name = "Circle of Healing", cost = 300, spellId = 34861, baseCastTime = 1.5, levelLearned = 50, rank = 1 },
                 { name = "Circle of Healing", cost = 337, spellId = 34863, baseCastTime = 1.5, levelLearned = 56, rank = 2 },
                 { name = "Circle of Healing", cost = 375, spellId = 34864, baseCastTime = 1.5, levelLearned = 60, rank = 3 },
                 { name = "Circle of Healing", cost = 412, spellId = 34865, baseCastTime = 1.5, levelLearned = 65, rank = 4 },
                 { name = "Circle of Healing", cost = 450, spellId = 34866, baseCastTime = 1.5, levelLearned = 70, rank = 5 },
-            }
+            },
+            bonusFn = function()
+                local _, _, _, _, rank  = GetTalentInfo(2, 15)
+                return 1 + (rank * 0.02)
+            end,
         },
     },
     SHAMAN = {
