@@ -7,11 +7,11 @@ local debug = false
 
 
 local function isTBC()
-    return BackdropTemplateMixin and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+    return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 end
 
 local function isClassic()
-    return BackdropTemplateMixin == nil and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+    return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 end
 
 if not(isClassic() or isTBC()) then
