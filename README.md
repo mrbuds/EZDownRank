@@ -10,6 +10,8 @@ A World of Warcraft Classic addon for healers.
 
 ## Default Click Configuration
 
+Note: This is with Classic spells, when new ranks are learn in TBC max ranks shift to new ones
+
 ### Priest
 
 * <kbd>1</kbd>-<kbd>7</kbd>: `Flash Heal` (Rank 1-7)
@@ -40,8 +42,6 @@ A World of Warcraft Classic addon for healers.
 * Orange: not enough mana
 
 ## Example
-
-[Here's a Twitch video demonstrating EZDownRank in BWL.](https://www.twitch.tv/videos/617061387?t=0h11m12s)
 
 ![img](https://i.imgur.com/E9L8EeK.png)
 
