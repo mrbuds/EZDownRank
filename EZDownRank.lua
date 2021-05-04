@@ -41,6 +41,12 @@ local defaults = {
 
 local addonName = "EZDownRank"
 
+-- Check relic
+local relic = GetInventoryItemLink("player", RANGED_SLOT)
+local playerCurrentRelic = relic and tonumber(strmatch(relic, "item:(%d+):")) or nil
+
+local flashLibrams = {[23006] = 83, [23201] = 53, [186065] = 10, [25644] = 79}
+local lhwTotems = {[22396] = 80, [23200] = 53, [186072] = 10, [25645] = 79}
 local spellsDB = {
     PRIEST = {
         normal = {
@@ -143,6 +149,9 @@ local spellsDB = {
                 local tidalFocus = select(5, GetTalentInfo(3, 2))
                 return 1 - (tidalFocus * 0.01)
             end,
+            bonusRelic = function()
+                return playerCurrentRelic and lhwTotems[playerCurrentRelic] or 0, "healingPower"
+            end
         },
         shift = {
             ranks = {
@@ -181,6 +190,9 @@ local spellsDB = {
                    end
                 end
                 return 1
+            end,
+            bonusRelic = function()
+                return playerCurrentRelic == 27544 and 88 or 0, "healingPower"
             end
         },
         ctrl = {
@@ -208,6 +220,9 @@ local spellsDB = {
                 local tidalFocus = select(5, GetTalentInfo(3, 2))
                 return 1 - (tidalFocus * 0.01)
             end,
+            bonusRelic = function()
+                return playerCurrentRelic == 28523 and 87 or 0, "healingAmount"
+            end
         },
         -- alt = {},
     },
@@ -236,6 +251,14 @@ local spellsDB = {
                 local _, _, _, _, rank  = GetTalentInfo(3, 9)
                 return 1 - (rank * 0.02)
             end,
+            bonusRelic = function()
+                if playerCurrentRelic == 2399 then
+                    return 100, "healingAmount"
+                elseif playerCurrentRelic == 28568 then
+                    return 136, "healingAmount"
+                end
+                return 0, "healingAmount"
+            end
         },
         shift = {
             ranks = { -- TODO check all spell cost
@@ -273,10 +296,15 @@ local spellsDB = {
                 { name = "Flash of Light", cost = 140, spellId = 19943, baseCastTime = 1.5, levelLearned = 58, rank = 6 },
                 { name = "Flash of Light", cost = 180, spellId = 27137, baseCastTime = 1.5, levelLearned = 66, rank = 7 },
             },
+            --[[ this is already apply in tooltip value
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(1, 5)
                 return 1 + (rank * 0.04)
             end,
+            ]]
+            bonusRelic = function()
+                return playerCurrentRelic and flashLibrams[playerCurrentRelic] or 0, "healingPower"
+            end
         },
         shift = {
             ranks = {
@@ -292,10 +320,15 @@ local spellsDB = {
                 { name = "Holy Light", cost = 710, spellId = 27135, baseCastTime = 2.5, levelLearned = 62, rank = 10 },
                 { name = "Holy Light", cost = 840, spellId = 27136, baseCastTime = 2.5, levelLearned = 70, rank = 11 },
             },
+            --[[ this is already apply in tooltip value
             bonusFn = function()
                 local _, _, _, _, rank  = GetTalentInfo(1, 5)
                 return 1 + (rank * 0.04)
             end,
+            ]]
+            bonusRelic = function()
+                return playerCurrentRelic == 28296 and 87 or 0, "healingPower"
+            end
         },
         ctrl = {
             ranks = {
@@ -325,7 +358,7 @@ local function updateSpells()
             if spell.known then
                 v.nbActive = v.nbActive + 1
             end
-            if isClassic() or isTBC() then
+            if isClassic() then
                 if spell.levelLearned < 20 then
                     spell.downrank = 1 - ((20 - spell.levelLearned) * 0.0375)
                     if spell.downrank < 0 then
@@ -334,9 +367,7 @@ local function updateSpells()
                 else
                     spell.downrank = 1
                 end
-            end
-            --[[ new formulas are not yet implemented on beta
-            if isTBC() then
+            elseif isTBC() then
                 local minLevel = spell.levelLearned
                 local maxLevel = v.ranks[i+1] and v.ranks[i+1].name == spell.name and v.ranks[i+1].levelLearned or minLevel
                 local downrank = (maxLevel + 6) / playerLevel
@@ -350,7 +381,6 @@ local function updateSpells()
                 end
                 spell.downrank = downrank
             end
-            ]]--
         end
     end
 end
@@ -385,12 +415,12 @@ local function getMinMax(spell, minMaxMatch)
     local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or ""
     local pos = minMaxMatch and minMaxMatch.pos or 1
     local regex = minMaxMatch and minMaxMatch.regex or "(%d+) .- (%d+)"
-    if isClassic() then
+    --if isClassic() then
         return select(pos, tooltipText:match(regex))
-    elseif isTBC() then
-        local value = tooltipText:match("(%d+)")
-        return value, value
-    end
+    --elseif isTBC() then
+    --    local value = tooltipText:match("(%d+)")
+    --    return value, value
+    --end
 end
 
 local buttons = {}
@@ -441,7 +471,7 @@ end
 
 local last
 local function updateStats()
-    print_debug("updateStats")
+    -- print_debug("updateStats")
     local now = GetTime()
     if now ~= last then
         healingPower = GetSpellBonusHealing()
@@ -451,7 +481,7 @@ local function updateStats()
 end
 
 local buttonHide = function(button)
-    print_debug("buttonHide")
+    -- print_debug("buttonHide")
     button:Hide()
     button:SetAttribute("unit", nil)
     button:SetAttribute("type1", nil)
@@ -465,7 +495,7 @@ local buttonHide = function(button)
 end
 
 local updateUnitColor = function(unit)
-    print_debug("updateUnitColor", unit)
+    -- print_debug("updateUnitColor", unit)
     local activeSpells = mySpells[keyState] or mySpells.normal
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
     local dead = UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)
@@ -488,9 +518,19 @@ local updateUnitColor = function(unit)
                 end
                 if spell.max then
                     local castTimePenality = spell.coef or spell.baseCastTime / 3.5
-                    local spellMaxHealing = (spell.max * activeSpells.bonus) + (healingPower * castTimePenality * spell.downrank) -- calculate max heal
+                    local healingAmount = spell.max * activeSpells.bonus
+                    local healingPowerloc = healingPower
+                    if spell.bonusRelic then
+                        local value, var = spell.bonusRelic()
+                        if var == "healingPower" then
+                            healingPowerloc = healingPowerloc + value
+                        elseif var == "healingAmount" then
+                            healingAmount = healingAmount + value
+                        end
+                    end
+                    local spellMaxHealing = healingAmount + (healingPowerloc * castTimePenality * spell.downrank) -- calculate max heal
                     spellMaxHealing = spellMaxHealing * buffModifier
-                    print_debug(("name: %s, rank: %d, max: %d, cmax: %d"):format(spell.name, spell.rank, spell.max, spellMaxHealing))
+                    print_debug(("name: %s, rank: %d, max: %d, cmax: %d, spellMaxHealing: %d"):format(spell.name, spell.rank, spell.max, spellMaxHealing))
                     if spellMaxHealing > deficit then
                         button:SetBackdropColor(1, 0, 0, 0) -- invisible
                     else
@@ -525,14 +565,14 @@ local updateUnitColor = function(unit)
 end
 
 local updateAllUnitColor = function()
-    print_debug("updateAllUnitColor")
+    -- print_debug("updateAllUnitColor")
     for unit in IterateGroupMembers() do
         updateUnitColor(unit)
     end
 end
 
 local InitSquares = function()
-    print_debug("InitSquares")
+    -- print_debug("InitSquares")
     for _, button in pairs(buttons) do
         buttonHide(button)
     end
@@ -616,7 +656,7 @@ local InitSquares = function()
 end
 
 local function Update()
-    print_debug("Update")
+    -- print_debug("Update")
     if not InCombatLockdown() then
         InitSquares()
     else -- in combat, try again in 2s
@@ -625,7 +665,7 @@ local function Update()
 end
 
 local DelayedUpdate = function()
-    print_debug("DelayedUpdate")
+    -- print_debug("DelayedUpdate")
     C_Timer.After(3, Update) -- wait 3s for addons to set their frames
 end
 
@@ -634,7 +674,7 @@ f:SetScript("OnEvent", function(self, event, ...)
 end)
 
 function f:ADDON_LOADED(event, loadedAddon)
-    print_debug(event, addonName)
+    -- print_debug(event, addonName)
     if loadedAddon == addonName then
         self:UnregisterEvent("ADDON_LOADED")
         if type(DB) ~= "table" then
@@ -675,7 +715,7 @@ f:SetScript("OnUpdate", function(self, elapsed)
 end)
 
 function f:UNIT_HEALTH_FREQUENT(event, unit)
-    print_debug(event, unit)
+    -- print_debug(event, unit)
     if groupUnit[unit] then
         updateStats()
         updateUnitColor(unit)
@@ -683,7 +723,7 @@ function f:UNIT_HEALTH_FREQUENT(event, unit)
 end
 
 function f:UNIT_POWER_UPDATE(event, unit)
-    print_debug(event, unit)
+    -- print_debug(event, unit)
     updateStats()
     if maxCostTable[keyState] and mana < maxCostTable[keyState] then
         updateAllUnitColor()
@@ -691,12 +731,12 @@ function f:UNIT_POWER_UPDATE(event, unit)
 end
 
 function f:SPELLS_CHANGED(event)
-    print_debug(event)
+    -- print_debug(event)
     updateSpells()
 end
 
 function f:CHARACTER_POINTS_CHANGED(event)
-    print_debug(event)
+    -- print_debug(event)
     updateSpells()
 end
 
