@@ -62,7 +62,7 @@ local spellsDB = {
                 { name = "Flash Heal", cost = 470, spellId = 25235, baseCastTime = 1.5, levelLearned = 67, rank = 9 },
             },
             bonusFn = function()
-                local _, _, _, _, rank  = GetTalentInfo(2, 15)
+                local _, _, _, _, rank  = GetTalentInfo(2, isClassic() and 15 or 16)
                 return 1 + (rank * 0.02)
             end,
         },
@@ -81,7 +81,7 @@ local spellsDB = {
                 { name = "Greater Heal", cost = 825, spellId = 25213, baseCastTime = 3, levelLearned = 68, rank = 7 },
             },
             bonusFn = function()
-                local _, _, _, _, rank  = GetTalentInfo(2, 15)
+                local _, _, _, _, rank  = GetTalentInfo(2, isClassic() and 15 or 16)
                 return 1 + (rank * 0.02)
             end,
             costFn = function()
@@ -99,7 +99,7 @@ local spellsDB = {
                 { name = "Prier of Healing", cost = 1255, spellId = 25308, baseCastTime = 3, levelLearned = 68, rank = 6 },
             },
             bonusFn = function()
-                local _, _, _, _, rank  = GetTalentInfo(2, 15)
+                local _, _, _, _, rank  = GetTalentInfo(2, isClassic() and 15 or 16)
                 return 1 + (rank * 0.02)
             end,
             costFn = function()
@@ -120,7 +120,7 @@ local spellsDB = {
                 { name = "Circle of Healing", cost = 450, spellId = 34866, baseCastTime = 1.5, levelLearned = 70, rank = 5 },
             },
             bonusFn = function()
-                local _, _, _, _, rank  = GetTalentInfo(2, 15)
+                local _, _, _, _, rank  = GetTalentInfo(2, isClassic() and 15 or 16)
                 return 1 + (rank * 0.02)
             end,
         },
