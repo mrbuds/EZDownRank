@@ -1,6 +1,6 @@
-## Interface: 11306
-## Interface-Classic: 11306
-## Interface-BCC: 20501
+## Interface: 11400
+## Interface-Classic: 11400
+## Interface-BCC: 20502
 ## X-Curse-Project-ID: 383394
 ## X-WoWI-ID: 25592
 ## X-Wago-ID: Rn6VPLGd
