@@ -343,6 +343,27 @@ local spellsDB = {
     }
 }
 
+local felArmor = GetSpellInfo(28189)
+local mortalStrike = GetSpellInfo(12294)
+local woundPoison = GetSpellInfo(13219)
+
+local function checkAuraMultipliers(unit)
+    local buff, debuff = 1, 1
+    local name, _, stacks
+    for i = 1, 255 do
+        name, _, stacks = UnitAura(unit, i)
+        if not name then break end
+        if name == felArmor then
+            buff = buff * 1.2
+        elseif name == mortalStrike then
+            debuff = 0.5
+        elseif name == woundPoison and debuff == 1 then
+            debuff = 1 - (0.1 * stacks)
+        end
+    end
+    return buff * debuff
+end
+
 local myClass = select(2, UnitClass("player"))
 if not spellsDB[myClass] then return end
 
@@ -500,6 +521,7 @@ local updateUnitColor = function(unit)
     local deficit = UnitHealthMax(unit) - UnitHealth(unit)
     local dead = UnitIsDeadOrGhost(unit) or not UnitIsConnected(unit)
     local buffModifier = activeSpells.buffModifier and activeSpells.buffModifier(unit) or 1
+    buffModifier = buffModifier * checkAuraMultipliers(unit)
     local bestFound
     local nbButtons = DB.columns * DB.rows
     for i = nbButtons, 1, -1 do
