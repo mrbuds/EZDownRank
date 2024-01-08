@@ -68,6 +68,9 @@ local spellsDB = {
         },
         shift = {
             ranks = {
+                { name = "Lesser Heal", cost = 30, spellId = 2050, baseCastTime = 1.5, levelLearned = 1, rank = 1 },
+                { name = "Lesser Heal", cost = 45, spellId = 2052, baseCastTime = 2, levelLearned = 4, rank = 2 },
+                { name = "Lesser Heal", cost = 75, spellId = 2053, baseCastTime = 2.5, levelLearned = 10, rank = 3 },
                 { name = "Heal", cost = 155, spellId = 2054, baseCastTime = 3, levelLearned = 16, rank = 1 },
                 { name = "Heal", cost = 205, spellId = 2055, baseCastTime = 3, levelLearned = 22, rank = 2 },
                 { name = "Heal", cost = 255, spellId = 6063, baseCastTime = 3, levelLearned = 28, rank = 3 },
