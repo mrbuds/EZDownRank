@@ -469,28 +469,51 @@ end
 
 local f = CreateFrame("Frame")
 
-local IterateGroupMembers = function(reversed, forceParty)
+local IterateGroupMembers = function(reversed, forceParty, includePets)
     local unit = (not forceParty and IsInRaid()) and 'raid' or 'party'
     local numGroupMembers = unit == 'party' and GetNumSubgroupMembers() or GetNumGroupMembers()
     local i = reversed and numGroupMembers or (unit == 'party' and 0 or 1)
+    local nextIsPet = false
     return function()
       local ret
       if i == 0 and unit == 'party' then
-        ret = 'player'
+        if nextIsPet then
+            ret = 'pet'
+            nextIsPet = false
+        else
+            ret = 'player'
+            if includePets then
+                nextIsPet = true
+            end
+        end
       elseif i <= numGroupMembers and i > 0 then
-        ret = unit .. i
+        if nextIsPet then
+            ret = unit .. i .. "-pet"
+            nextIsPet = false
+        else
+            ret = unit .. i
+            if includePets then
+                nextIsPet = true
+            end
+        end
       end
-      i = i + (reversed and -1 or 1)
+      if not nextIsPet then
+        i = i + (reversed and -1 or 1)
+      end
       return ret
     end
 end
 
-local groupUnit = { ["player"] = true }
+local groupUnit = { ["player"] = true, ["pet"] = true }
 for i = 1, 4 do
     groupUnit["party"..i] = true
+    groupUnit["party"..i.."pet"] = true
+    groupUnit["party"..i.."-pet"] = true
 end
 for i = 1, 40 do
     groupUnit["raid"..i] = true
+    groupUnit["raid"..i.."pet"] = true
+    groupUnit["raid"..i.."-pet"] = true
 end
 
 local last
@@ -591,7 +614,7 @@ end
 
 local updateAllUnitColor = function()
     -- print_debug("updateAllUnitColor")
-    for unit in IterateGroupMembers() do
+    for unit in IterateGroupMembers(false, false, true) do
         updateUnitColor(unit)
     end
 end
@@ -603,7 +626,7 @@ local InitSquares = function()
     end
 
     updateStats()
-    for unit in IterateGroupMembers() do
+    for unit in IterateGroupMembers(false, false, true) do
         local frame = GetUnitFrame(unit)
         if frame then
             local scale = frame:GetEffectiveScale()
